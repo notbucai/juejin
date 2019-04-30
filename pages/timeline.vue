@@ -1,31 +1,62 @@
 <template>
   <section class="container">
-    <Navigation/>
+    <!-- 二级 -->
+    <Navigation :list="navigation"/>
 
-    <div class="timeline-list">
-      <nuxt-child/>
-    </div>
-    <aside class="timeline-aside">
-      <div class="timeline-aside-wrap" v-scroll="handleAside">
-        <RecommendAuthor/>
+    <transition name="disappear">
+      <!-- 三级导航 -->
+      <NavChildren v-if="tags && tags.length" :list="tags" :url="$route.params.url"/>
+    </transition>
+    <!-- 主体部分 -->
+    <main class="timeline-main">
+      <div class="timeline-list">
+        <nuxt-child @updateTags="handleUpdateTwoNavList"/>
       </div>
-      <RecommendBook/>
-      <AsideInfo/>
-    </aside>
+      <aside class="timeline-aside">
+        <div class="timeline-aside-wrap" v-scroll="handleAside">
+          <RecommendAuthor/>
+        </div>
+        <RecommendBook/>
+        <AsideInfo/>
+      </aside>
+    </main>
   </section>
 </template>
 
 <script>
-import Navigation from "@/components/timeline/navigation.vue";
+import Navigation from "@/components/timeline/Navigation.vue";
+import NavChildren from "@/components/timeline/NavChildren.vue";
 import RecommendAuthor from "@/components/timeline/recommendAuthor.vue";
 import RecommendBook from "@/components/timeline/recommendBook.vue";
 import AsideInfo from "@/components/timeline/AsideInfo.vue";
 
 export default {
-  components: { Navigation, RecommendAuthor, RecommendBook, AsideInfo },
+  async asyncData({ app }) {
+    const navigation = await app.$api.common.navigation();
+    return {
+      navigation
+    };
+  },
+  components: {
+    Navigation,
+    RecommendAuthor,
+    RecommendBook,
+    AsideInfo,
+    NavChildren
+  },
   created() {},
   data() {
-    return {};
+    return {
+      navigation: [],
+      tags: []
+    };
+  },
+  watch: {
+    $route(_new) {
+      if (JSON.stringify(_new.params) == "{}") {
+        this.tags = [];
+      }
+    }
   },
   methods: {
     handleAside(evt, el) {
@@ -39,6 +70,27 @@ export default {
       } else {
         el.classList.remove("top");
       }
+    },
+    async handleUpdateTwoNavList(url) {
+      if (!url) {
+        throw new Error("url错误");
+      }
+      const nav = this.navigation.find(item => {
+        return item.url == url;
+      });
+
+      if (!nav) {
+        throw new Error("获取数据错误");
+      }
+      const data = await this.$api.common.getTagsByNavId(nav._id);
+
+      this.tags = [
+        {
+          id: 0,
+          title: "全部"
+        },
+        ...(data || [])
+      ];
     }
   }
 };
@@ -50,8 +102,19 @@ $aside-width: 240px;
   margin-top: 60px;
   position: relative;
   height: 10000px;
+  .disappear-enter-active,
+  .disappear-leave-active {
+    transition: opacity 0.2s;
+  }
+  .disappear-enter, .disappear-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
 }
 .timeline {
+  &-main {
+    position: relative;
+    /* margin-top: 15px; */
+  }
   &-list {
     margin-right: $aside-width + 20px;
     background-color: #fff;
@@ -77,6 +140,7 @@ $aside-width: 240px;
         position: fixed;
         opacity: 1;
         z-index: 10;
+        top: 120px;
       }
     }
   }

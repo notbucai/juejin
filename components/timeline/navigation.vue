@@ -2,21 +2,26 @@
   <div class="nav_wrap" :class="{top:istop}" v-scroll="handleScroll">
     <nav class="nav container">
       <nuxt-link to="/timeline/recommended" class="nav-item">推荐</nuxt-link>
-      <nuxt-link to="/timeline/following" class="nav-item">关注</nuxt-link>
-      <nuxt-link to="/2" class="nav-item">首页</nuxt-link>
-      <nuxt-link to="/3" class="nav-item">首页</nuxt-link>
-      <nuxt-link to="/6" class="nav-item">首页</nuxt-link>
-      <nuxt-link to="/6" class="nav-item">首页</nuxt-link>
-      <nuxt-link to="/6" class="nav-item">首页</nuxt-link>
-      <nuxt-link to="/6" class="nav-item">首页</nuxt-link>
-      <nuxt-link to="/6" class="nav-item">首页</nuxt-link>
-      <nuxt-link to="/6" class="nav-item">首页</nuxt-link>
+      <nuxt-link
+        :to="`/timeline/${item.url}`"
+        v-for="item in list"
+        :key="item.id"
+        class="nav-item"
+      >{{item.title}}</nuxt-link>
     </nav>
   </div>
 </template>
 
 <script>
 export default {
+  props: {
+    list: {
+      type: Array,
+      default() {
+        return [];
+      }
+    }
+  },
   data() {
     return {
       istop: false,
@@ -67,7 +72,7 @@ export default {
   position: relative;
   overflow-y: auto;
   height: 44px;
-  @media screen {
+  @media (max-width: 960px) {
     & &-item {
       &:first-child {
         padding-left: 18px;
@@ -82,10 +87,13 @@ export default {
     font-size: 14px;
     color: $fontColor;
     white-space: nowrap;
+    &:hover{
+      color: $fontActiveColor;
+    }
     &:first-child {
       padding-left: 0;
     }
-    &.nuxt-link-exact-active {
+    &.nuxt-link-active {
       color: $fontActiveColor;
     }
   }

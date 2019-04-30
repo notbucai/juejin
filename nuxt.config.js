@@ -4,6 +4,19 @@ const pkg = require('./package')
 module.exports = {
   mode: 'universal',
 
+  env: {
+    db: {
+      "url": "mongodb://localhost:27017/",
+      "dbName": "juejin"
+    }
+  },
+
+  router: {
+    middleware: 'redirect',
+    extendRoutes(routes, resolve) {
+      // 啥都不行。。。
+    }
+  },
   /*
   ** Headers of the page
   */
@@ -37,7 +50,8 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/directive.js'
+    '@/plugins/directive.js',
+    '@/plugins/axios.js',
   ],
 
   /*

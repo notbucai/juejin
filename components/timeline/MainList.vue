@@ -3,14 +3,14 @@
   <div class="list">
     <header class="list-header">
       <div class="list-sort left">
-        <nuxt-link to="?sort=123">热门</nuxt-link>
-        <nuxt-link to="?sort=122">最新</nuxt-link>
-        <nuxt-link to="?sort=33">评论</nuxt-link>
+        <nuxt-link :to="{query:{...$route.query,sort:'popular'}}">热门</nuxt-link>
+        <nuxt-link :to="{query:{...$route.query,sort:'newest'}}">最新</nuxt-link>
+        <nuxt-link :to="{query:{...$route.query,sort:'comment'}}">评论</nuxt-link>
       </div>
       <div class="list-sort right">
-        <nuxt-link to="?sort=12333">本周最热</nuxt-link>
-        <nuxt-link to="?sort=饿443">本月最热</nuxt-link>
-        <nuxt-link to="?sort=2365">历史最热</nuxt-link>
+        <nuxt-link :to="{query:{...$route.query,sort:'weekly_hottest'}}">本周最热</nuxt-link>
+        <nuxt-link :to="{query:{...$route.query,sort:'monthly_hottest'}}">本月最热</nuxt-link>
+        <nuxt-link :to="{query:{...$route.query,sort:'hottest'}}">历史最热</nuxt-link>
       </div>
     </header>
     <ArticleItem/>
@@ -59,7 +59,7 @@ export default {
           content: "";
           width: 1px;
           height: 60%;
-          background-color: $fontColor * 1.6;
+          background-color: rgba($fontColor, 0.6);
         }
       }
     }
@@ -76,7 +76,7 @@ export default {
           content: "";
           width: 2px;
           height: 2px;
-          background-color: $fontColor * 1.6;
+          background-color: rgba($fontColor, 0.6);
         }
       }
     }
