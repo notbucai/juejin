@@ -2,7 +2,7 @@
   <div class="nav_wrap">
     <nav class="nav container">
       <nuxt-link
-        :to="{query:{...$route.query,tab:item.title}}"
+        :to="{query:{...$route.query,tag:item.title}}"
         class="nav-item"
         v-for="item in showList"
         :key="item.id"

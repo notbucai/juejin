@@ -8,7 +8,7 @@ const Schema = mongoose.Schema({
   },
   nav_id: {
     type: mongoose.Types.ObjectId,
-    required: true,
+    ref: 'navs'
   }
 });
 

@@ -10,7 +10,12 @@
     <!-- 主体部分 -->
     <main class="timeline-main">
       <div class="timeline-list">
-        <nuxt-child @updateTags="handleUpdateTwoNavList"/>
+        <nuxt-child
+          @updateTags="handleUpdateTwoNavList"
+          @infiniteLoading="handleInfiniteLoading"
+          @init="handleTimelineInit"
+          :list="timeline.articleObj.list"
+        />
       </div>
       <aside class="timeline-aside">
         <div class="timeline-aside-wrap" v-scroll="handleAside">
@@ -31,6 +36,15 @@ import RecommendBook from "@/components/timeline/recommendBook.vue";
 import AsideInfo from "@/components/timeline/AsideInfo.vue";
 
 export default {
+  head() {
+    
+    const current_nav = this.navigation.find(item => {
+      return item.url == this.$route.params.url;
+    });
+    return {
+      title: (current_nav && current_nav.title) || "掘金"
+    };
+  },
   async asyncData({ app }) {
     const navigation = await app.$api.common.navigation();
     return {
@@ -48,7 +62,15 @@ export default {
   data() {
     return {
       navigation: [],
-      tags: []
+      tags: [],
+      timeline: {
+        articleObj: {
+          list: [],
+          hasNextPage: false
+        },
+        loading: false,
+        page: 1
+      }
     };
   },
   watch: {
@@ -91,6 +113,86 @@ export default {
         },
         ...(data || [])
       ];
+    },
+    async handleTimelineInit() {
+      const options = {};
+      const { sort, tag } = this.$route.query;
+      const { url } = this.$route.params;
+
+      const _nav = this.navigation.find(item => item.url === url);
+      const _tag = this.tags.find(item => item.title === tag);
+
+      if (_nav && _nav._id) {
+        options.nav_id = _nav._id;
+      }
+      if (_tag && _tag._id) {
+        options.tag_id = _tag._id;
+      }
+
+      options.sort = sort;
+
+      // console.log(_nav, _tag, this.$route, options);
+
+      const articleObj = await this.getArticleList({ ...options });
+      this.timeline.articleObj = articleObj;
+    },
+    async handleInfiniteLoading() {
+      if (this.timeline.loading) {
+        return;
+      }
+      if (!this.timeline.articleObj.hasNextPage) {
+        return;
+      }
+      this.timeline.loading = true;
+
+      const page = Math.ceil(
+        ((this.timeline.articleObj.list &&
+          this.timeline.articleObj.list.length / 10) ||
+          1) + 1
+      );
+
+      // const sort = this.$route.query.sort;
+
+      const options = {};
+      const { sort, tag } = this.$route.query;
+      const { url } = this.$route.params;
+
+      const _nav = this.navigation.find(item => item.url === url);
+      const _tag = this.tags.find(item => item.title === tag);
+
+      if (_nav && _nav._id) {
+        options.nav_id = _nav._id;
+      }
+      if (_tag && _tag._id) {
+        options.tag_id = _tag._id;
+      }
+
+      options.sort = sort;
+      options.page = page;
+
+      const articleObj = await this.getArticleList({ ...options });
+
+      articleObj["list"] = [
+        ...this.timeline.articleObj["list"],
+        ...articleObj["list"]
+      ];
+
+      this.timeline.articleObj = articleObj;
+      setTimeout(() => {
+        this.timeline.loading = false;
+      }, 400);
+    },
+
+    // tab=深度学习&sort=popular
+    async getArticleList({ page, nav_id, tag_id, sort } = {}) {
+      const articleObj = await this.$api.common.getAeticleListByNav_id({
+        page,
+        nav_id,
+        tag_id,
+        page,
+        sort
+      });
+      return articleObj;
     }
   }
 };
@@ -101,7 +203,7 @@ $aside-width: 240px;
 .container {
   margin-top: 60px;
   position: relative;
-  height: 10000px;
+  /* height: 10000px; */
   .disappear-enter-active,
   .disappear-leave-active {
     transition: opacity 0.2s;

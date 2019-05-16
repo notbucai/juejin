@@ -3,11 +3,11 @@ const mongoose = require('./db.util');
 const Schema = mongoose.Schema({
   article_id: {
     type: mongoose.Types.ObjectId,
-    required: true,
+    ref: 'articles'
   },
   tag_id: {
     type: mongoose.Types.ObjectId,
-    required: true,
+    ref: 'tags'
   }
 });
 

@@ -4,6 +4,7 @@
 
 <script>
 export default {
+  title:"掘金",
   components: {},
   created() {
     this.$router.push('/');

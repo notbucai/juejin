@@ -71,13 +71,13 @@ Schema.static('findArticles', async function ({
 
 const Nav = mongoose.model('nav', Schema);
 
-(async () => {
-  console.log(JSON.stringify(await Nav.findArticles({
-    id: "5cc3d64ea5d0aa06fed13656"
-  }), 2, 2));
-  setTimeout(() => {
-    process.exit();
-  }, 100);
-})();
+// (async () => {
+//   console.log(JSON.stringify(await Nav.findArticles({
+//     id: "5cc3d64ea5d0aa06fed13656"
+//   }), 2, 2));
+//   setTimeout(() => {
+//     process.exit();
+//   }, 100);
+// })();
 
 module.exports = Nav;

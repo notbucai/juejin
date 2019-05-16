@@ -1,40 +1,62 @@
 <template>
-  <nuxt-link to="/" class="item" tag="div">
+  <nuxt-link target="_blank" :to="`/post/${_id}`" class="item">
     <main class="item-main">
       <div class="info">
         <span class="info-item hot">热</span>
         <span class="info-item post">专栏</span>
         <span class="info-item username">
-          <nuxt-link to="/">不才</nuxt-link>
+          <nuxt-link target="_blank" :to="`/user/${user._id}`">{{user.username}}</nuxt-link>
         </span>
-        <span class="info-item">4小时前</span>
-        <span class="info-item tag">
-          <nuxt-link to="/">微信</nuxt-link>
-          <span>/</span>
-          <nuxt-link to="/">JavaScript</nuxt-link>
-        </span>
+        <span class="info-item">{{moment(date)}}</span>
+        <template v-for="(tag,index) in tags">
+          <span class="info-item tag" :key="tag._id">
+            <nuxt-link target="_blank" :to="`/tag/${tag._id}`">{{tag.title}}</nuxt-link>
+            <span :key="tag._id" v-if="tags.length-1 !== index">/</span>
+          </span>
+        </template>
       </div>
       <div class="title">
-        <nuxt-link to="/">微信小程序看今天支持svg了</nuxt-link>
+        <nuxt-link target="_blank" :to="`/post/${_id}`">{{title}}</nuxt-link>
       </div>
       <div class="action">
         <div class="action-item">
           <i class="iconfont">&#xe604;</i>
-          <span>123</span>
+          <span>{{like_size}}</span>
         </div>
         <div class="action-item">
           <i class="iconfont">&#xe606;</i>
-          <span>123</span>
+          <span>{{comments_size}}</span>
         </div>
       </div>
     </main>
     <div class="item-img">
-      <img
-        src="https://user-gold-cdn.xitu.io/2018/10/23/166a0387b91066b9?imageView2/1/w/120/h/120/q/85/format/webp/interlace/1"
-      >
+      <img v-if="hero" :src="hero">
     </div>
   </nuxt-link>
 </template>
+
+<script>
+import moment from "moment";
+moment.locale("zh-cn");
+export default {
+  props: {
+    _id: [String, Number],
+    title: String,
+    user: Object,
+    nav: Object,
+    tags: Array,
+    date: [String, Date],
+    like_size: Number,
+    comments_size: Number,
+    hero: String
+  },
+  methods: {
+    moment(date) {
+      return moment(date, "YYYYMMDD").fromNow();
+    }
+  }
+};
+</script>
 
 <style lang="scss" scoped>
 .item {
@@ -49,6 +71,8 @@
   }
   &-main {
     flex-grow: 1;
+    overflow: hidden;
+    box-sizing: border-box;
   }
   &-img {
     min-width: 60px;
@@ -98,6 +122,7 @@
     }
   }
   .title {
+    width: 80%;
     margin: 8px 0 14px;
     white-space: nowrap;
     overflow: hidden;
