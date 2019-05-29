@@ -1,7 +1,7 @@
 <template>
   <div class="user">
     <nuxt-link :to="`/user/${user._id}`" class="user-avatar">
-      <img :src="user.avatar" alt="#">
+      <img :src="user.avatar || require('@/assets/img/avatar.jpeg')" alt="#">
     </nuxt-link>
     <div class="user-main">
       <nuxt-link :to="`/user/${user._id}`" class="name">

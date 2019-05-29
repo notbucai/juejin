@@ -147,15 +147,22 @@ a {
   text-decoration: none;
 }
 
+button,
+input {
+  outline: none;
+}
+
 @font-face {
-  font-family: 'iconfont';  /* project id 1147415 */
+  font-family: 'iconfont';
+  /* project id 1147415 */
   src: url('//at.alicdn.com/t/font_1147415_9j5vunno7j.eot');
   src: url('//at.alicdn.com/t/font_1147415_9j5vunno7j.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_1147415_9j5vunno7j.woff2') format('woff2'),
-  url('//at.alicdn.com/t/font_1147415_9j5vunno7j.woff') format('woff'),
-  url('//at.alicdn.com/t/font_1147415_9j5vunno7j.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_1147415_9j5vunno7j.svg#iconfont') format('svg');
+    url('//at.alicdn.com/t/font_1147415_9j5vunno7j.woff2') format('woff2'),
+    url('//at.alicdn.com/t/font_1147415_9j5vunno7j.woff') format('woff'),
+    url('//at.alicdn.com/t/font_1147415_9j5vunno7j.ttf') format('truetype'),
+    url('//at.alicdn.com/t/font_1147415_9j5vunno7j.svg#iconfont') format('svg');
 }
+
 .iconfont {
   font-family: iconfont !important;
   font-size: 14px;

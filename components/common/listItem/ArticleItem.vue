@@ -36,8 +36,6 @@
 </template>
 
 <script>
-import moment from "moment";
-moment.locale("zh-cn");
 export default {
   props: {
     _id: [String, Number],
@@ -52,7 +50,7 @@ export default {
   },
   methods: {
     moment(date) {
-      return moment(date, "YYYYMMDD").fromNow();
+      return this.$util.moment.relativeNow(date);
     }
   }
 };

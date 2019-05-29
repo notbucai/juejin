@@ -1,5 +1,4 @@
 import axios from 'axios';
-import commonFn from './apis/common';
 
 const instance = axios.create({
   baseURL: 'http://127.0.0.1:3000/api',
@@ -30,8 +29,14 @@ instance.interceptors.response.use(function (response) {
   return Promise.reject(error);
 });
 
+import commonFn from './apis/common';
+import postFn from './apis/post';
+import commentFn from './apis/comment';
+
 const common = commonFn(instance);
+const post = postFn(instance);
+const comment = commentFn(instance);
 
 export default ({ }, inject) => {
-  inject('api', { common });
+  inject('api', { common, post, comment });
 }

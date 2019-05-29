@@ -1,19 +1,18 @@
 <template>
   <section class="container article">
     <main class="article_main">
-      <UserItem/>
+      <UserItem :user="main.user" :date="main.date" :reading="0"/>
       <article>
         <div
           class="hero"
           :style="{'background-image':'url(https://user-gold-cdn.xitu.io/2019/5/14/16ab64541d22911f?imageView2/1/w/1304/h/734/q/85/format/webp/interlace/1)'}"
         ></div>
-        <h1 class="title">标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题标题</h1>
-        <div class="content">
-          1231231231231
-          <h1 class="heading" data-id="heading-0">VuePress(0.x版本)</h1>
-        </div>
-        <TagList/>
-        <UserInfo/>
+        <h1 class="title">{{main.title}}</h1>
+        <div class="content" v-html="main.content"></div>
+        <TagList :tags="main.tags"/>
+        <UserInfo :user="main.user"/>
+        <EditInput :user="main.user"/>
+        <CommentList :comments="comments"/>
       </article>
     </main>
     <aside class="article_aside">
@@ -23,16 +22,49 @@
 </template>
 
 <script>
-import UserItem from "@/components/common/post/UserItem";
-import UserInfo from "@/components/common/post/UserInfo";
-import About from "@/components/common/post/About";
-import TagList from "@/components/common/post/TagList";
+import UserItem from "@/components/post/UserItem";
+import UserInfo from "@/components/post/UserInfo";
+import About from "@/components/post/About";
+import TagList from "@/components/post/TagList";
+import EditInput from "@/components/post/EditInput";
+import CommentList from "@/components/post/CommentList";
 
 export default {
-  components: { About, UserItem, UserInfo, TagList },
+  async asyncData({ route, app }) {
+    const { id } = route.params;
+    if ((id && id.length == 24) || id.length == 12) {
+      return {
+        main: await app.$api.post.getAeticleByid(id)
+      };
+    }
+    // post 是文章 不是post请求
+  },
+  components: { About, UserItem, UserInfo, TagList, EditInput, CommentList },
   created() {},
+  async mounted() {
+    const { id } = this.$route.params;
+    const data = await this.$api.comment.getCommentListByid(id);
+    console.log(data);
+    
+    this.comments = data;
+  },
   data() {
-    return {};
+    return {
+      main: {
+        _id: "",
+        title: "",
+        content: "",
+        date: "",
+        updated: "",
+        user: {},
+        nav: {},
+        tags: [],
+        comments: [],
+        like_size: 0,
+        comments_size: 0
+      },
+      comments: [],
+    };
   },
   methods: {}
 };
@@ -46,6 +78,7 @@ $aside-width: 240px;
   margin-top: 20px;
   position: relative;
   &_main {
+    overflow: hidden;
     padding: 0 15px;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     margin-right: $aside-width + 20px;

@@ -55,6 +55,7 @@ module.exports = {
   plugins: [
     '@/plugins/directive.js',
     '@/plugins/axios.js',
+    '@/plugins/utils.js',
   ],
 
   /*

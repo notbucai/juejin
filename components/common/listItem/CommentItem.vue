@@ -1,0 +1,146 @@
+<template>
+  <div class="comment">
+    <!-- comment-list -->
+    <div class="comment-avatar">
+      <nuxt-link :to="`/user/${user._id}`">
+        <img :src="user.avatar || require('@/assets/img/avatar.jpeg')" alt="avatar">
+      </nuxt-link>
+    </div>
+    <div class="comment-main">
+      <div class="comment-one">
+        <div class="comment-user">
+          <nuxt-link class="comment-user-name" :to="`/user/${user._id}`">名字</nuxt-link>
+          <!-- <span>细节</span> -->
+        </div>
+        <div class="comment-content" v-html="content"></div>
+        <div class="comment-action-box">
+          <div class="comment-time">{{moment(date)}}</div>
+          <div class="comment-action">
+            <span @click="handleLike">
+              <i class="iconfont">&#xe604;</i> 1
+            </span>
+            <span @click="handleReply">
+              <i class="iconfont">&#xe606;</i>
+              回复
+            </span>
+          </div>
+        </div>
+        <slot name="edit" class="comment-bgc"></slot>
+      </div>
+      <div class="comment-bgc">
+        <slot name="comment" class="comment-bgc"></slot>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    _id: [String, Number],
+    article_id: String,
+    user_id: String,
+    content: String,
+    reply_user_id: String,
+    comment_id: String,
+    date: String,
+    user: {
+      type: Object,
+      default() {
+        return {
+          _id: [String, Number],
+          username: String,
+          avatar: String
+        };
+      }
+    }
+  },
+  methods: {
+    handleReply() {
+      this.$emit("reply");
+    },
+    handleLike() {
+      this.$emit("like");
+    },
+    moment(date) {
+      return this.$util.moment.relativeNow(date);
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.comment {
+  /* display: flex; */
+  margin-bottom: 10px;
+  position: relative;
+  &-avatar {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    overflow: hidden;
+    border-radius: 50%;
+    white-space: nowrap;
+    position: absolute;
+    a {
+      display: block;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  &-main {
+    margin-left: 46px;
+  }
+  &-user {
+    font-size: 14px;
+    color: #333;
+    margin: 2px 0 10px;
+    display: flex;
+    &-name {
+      display: block;
+      color: #444;
+      margin-right: 8px;
+    }
+    span {
+      color: #888;
+    }
+  }
+  &-content {
+    font-size: 14px;
+    color: #505050;
+    line-height: 1.7;
+  }
+  &-action-box {
+    margin-top: 10px;
+    color: #8a9aa9;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+  }
+  &-action {
+    span {
+      cursor: pointer;
+      margin-left: 10px;
+    }
+  }
+  &-one {
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 10px;
+    padding: 0 0 10px;
+  }
+  &-bgc {
+    background-color: #fafbfc;
+    padding: 10px;
+    border-radius: 4px;
+    &:empty {
+      display: none;
+    }
+  }
+  &-two {
+    margin-left: 60px;
+  }
+}
+</style>

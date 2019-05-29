@@ -22,7 +22,6 @@ const getAeticleListByNav_id = async (ctx, next) => {
   const skip = (page - 1 || 0) * 10,
     order = sortTotype(sort),
     list = await Article.findAeticleByNav_id({ nav_id: nav_id, tag_id: tag_id, skip, order });
-
   ctx.body = {
     code: 0,
     data: {
@@ -36,9 +35,13 @@ const getAeticleByid = async (ctx, next) => {
   const { id } = ctx.query;
 
   const _article = await Article.findAeticleByid({ id });
+    // _comments = await Comment.findCommentsByArticle_id({ id });
+
   ctx.body = {
     code: 0,
-    data: _article
+    data: {
+      ..._article,
+    }
   }
 }
 

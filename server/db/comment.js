@@ -38,11 +38,11 @@ const Schema = mongoose.Schema({
   },
 });
 
-Schema.static('test', async function () {
+Schema.static('findCommentsByArticle_id', async function ({ id } = {}) {
   const oneCommentList = await this.aggregate([
     {
       $match: {
-        article_id: ObjectId("5cc660b6423653247ff0b3f4"),
+        article_id: ObjectId(id),
         comment_id: null
       }
     },
