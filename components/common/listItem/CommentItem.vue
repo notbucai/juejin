@@ -3,16 +3,28 @@
     <!-- comment-list -->
     <div class="comment-avatar">
       <nuxt-link :to="`/user/${user._id}`">
-        <img :src="user.avatar || require('@/assets/img/avatar.jpeg')" alt="avatar">
+        <img v-if="user.avatar" :src="user.avatar" alt="avatar">
+        <div v-else v-html="this.$util.avatars.init(user._id)"></div>
       </nuxt-link>
     </div>
     <div class="comment-main">
       <div class="comment-one">
         <div class="comment-user">
-          <nuxt-link class="comment-user-name" :to="`/user/${user._id}`">名字</nuxt-link>
+          <nuxt-link class="comment-user-name" :to="`/user/${user._id}`">{{user.username}}</nuxt-link>
           <!-- <span>细节</span> -->
         </div>
-        <div class="comment-content" v-html="content"></div>
+
+        <div class="comment-content">
+          <div v-if="reply_user" class="reply_user">
+            回复
+            <nuxt-link
+              class="reply_user-username"
+              :to="`/user/${reply_user._id}`"
+            >{{reply_user.username}}</nuxt-link>：
+          </div>
+          <div v-html="content"></div>
+        </div>
+
         <div class="comment-action-box">
           <div class="comment-time">{{moment(date)}}</div>
           <div class="comment-action">
@@ -41,6 +53,7 @@ export default {
     article_id: String,
     user_id: String,
     content: String,
+    reply_user: Object,
     reply_user_id: String,
     comment_id: String,
     date: String,
@@ -112,6 +125,16 @@ export default {
     font-size: 14px;
     color: #505050;
     line-height: 1.7;
+    display: flex;
+    align-items: center;
+  }
+  .reply_user {
+    color: #888;
+    font-size: 12px;
+    &-username {
+      font-size: 12px;
+      color: $fontActiveColor;
+    }
   }
   &-action-box {
     margin-top: 10px;

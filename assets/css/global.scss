@@ -170,3 +170,19 @@ input {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/*
+  自定义公共样式
+*/
+.sm-font{
+  font-size: 12px;
+}
+.md-font{
+  font-size: 16px;
+}
+.lg-font{
+  font-size: 20px;
+}
+.blue-font{
+  color: $fontActiveColor;
+}

@@ -1,12 +1,13 @@
 <template>
-  <nuxt-link class="user_item" :to="id">
+  <nuxt-link class="user_item" :to="`/user/${_id}`">
     <div class="user-aratar">
-      <img :src="aratar" :alt="username">
+      <img v-if="aratar" :src="aratar" :alt="username">
+      <div v-else v-html="this.$util.avatars.init(_id)"></div>
     </div>
     <div class="user-info">
       <div class="username">{{username}}</div>
-      <div class="position">{{position}}</div>
-      <div class="description">{{description}}</div>
+      <div class="position">{{position || "无"}}</div>
+      <div class="description">{{description || "无"}}</div>
     </div>
   </nuxt-link>
 </template>
@@ -14,11 +15,14 @@
 <script>
 export default {
   props: {
-    id: [String, Number],
+    _id: [String, Number],
     aratar: String,
     username: String,
     position: String,
     description: String
+  },
+  data() {
+    return {};
   }
 };
 </script>

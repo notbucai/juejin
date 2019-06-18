@@ -1,7 +1,8 @@
 <template>
   <div class="edit-box" v-show="isyes || (content || content.length)">
     <div class="avatar-box">
-      <img :src="user.avatar || require('@/assets/img/avatar.jpeg')" alt="avatar">
+      <img v-if="user.avatar" :src="user.avatar || null" alt="avatar">
+      <div v-else v-html="this.$util.avatars.init(user._id||'null')"></div>
     </div>
     <div class="form-box">
       <div class="input-box">
@@ -24,9 +25,9 @@
           <div class="submit">
             <button
               class="btn"
-              :class="{empty:!content || !content.length}"
+              :class="{empty:!content || !content.length || isOk===1}"
               @click="handleSubmit"
-            >评论</button>
+            >{{isOk===1?'评论中':isOk===2?'出现错误':'评论'}}</button>
           </div>
         </div>
       </transition>
@@ -45,7 +46,7 @@ export default {
       type: Object,
       default() {
         return {
-          avatar: String
+          avatar: ""
         };
       }
     }
@@ -53,7 +54,8 @@ export default {
   data() {
     return {
       isShow: false,
-      content: ""
+      content: "",
+      isOk: 0
     };
   },
   watch: {
@@ -70,7 +72,18 @@ export default {
       this.content = e.target.innerHTML;
     },
     handleSubmit() {
-      this.$emit("btnClick", this.content);
+      if (this.isOk !== 1) {
+        this.isOk = 1;
+        this.$emit("btnClick", this.content, this.handleStatus);
+      }
+    },
+    handleStatus(stat) {
+      this.isOk = 0;
+      if (stat == 0) {
+        this.content = "";
+      } else {
+        this.isOk = 2;
+      }
     }
   }
 };

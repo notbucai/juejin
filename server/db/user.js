@@ -1,8 +1,22 @@
 const mongoose = require('./db.util');
+const Article = require('./article');
+const encryption = require('../encryption');
 
 const Schema = mongoose.Schema({
   // 用户名
   username: {
+    type: String,
+    unique: true,
+    required: true,
+  },
+  //  密码
+  userpass: {
+    type: String,
+    unique: true,
+    required: true,
+  },
+  //  手机号
+  userphone: {
     type: String,
     unique: true,
     required: true,
@@ -29,6 +43,72 @@ const Schema = mongoose.Schema({
     required: true,
     default: Date.now
   },
+});
+
+
+Schema.static('findUserById', async function (id) {
+  const user = await this.findById(id, { userpass: 0 })
+
+  if (!user) {
+    throw new Error("未查询到该用户");
+  }
+
+  const articleList = await Article.findArticleListByUserid({ id });
+
+  const extra = {
+    likeNum: 0,
+    lookNum: 0
+  };
+
+  articleList.forEach(item => {
+    extra.likeNum += item.like_size || 0;
+    extra.lookNum += item.look || 0;
+  });
+
+  return {
+    ...user.toJSON(),
+    ...extra
+  };
+
+});
+
+Schema.static('findHotUser', async function () {
+
+  const userList = (await this.find({},{userpass:0}));
+  const resList = [];
+
+  for (let i = 0; i < userList.length; i++) {
+    const item = userList[i];
+    const user = await this.findUserById(item._id);
+    resList.push(user);
+  }
+
+  return resList.sort((item_a, item_b) => {
+    return (item_a.likeNum * 10 + item_a.lookNum > item_b.likeNum * 10 + item_b.lookNum) ? -1 : 1;
+  }).splice(0, 20);
+
+});
+
+Schema.static('login', async function ({ loginName, loginPass }) {
+  if (!loginName || !loginPass) {
+    throw new Error("账号或密码不能为空");
+  }
+
+  const passEncrypted = encryption.md5(loginPass);
+  const user = await this.findOne({
+    $or: [
+      { username: loginName },
+      { userphone: loginName }
+    ],
+    userpass: passEncrypted
+  }, { userpass: 0 });
+
+  if (!user) {
+    throw new Error("账号或密码错误");
+  }
+
+  return user;
+
 });
 
 const User = mongoose.model('user', Schema);

@@ -17,7 +17,7 @@ export default {
   },
   // 列表数据不应该在 服务器渲染 应该在 客户端 利于维护
   // async asyncData({ app, route }) {
-  //   const articleObj = await app.$api.common.getAeticleListByNav_id({
+  //   const articleObj = await app.$api.common.getArticleListByNav_id({
   //     sort: route.query.sort
   //   });
   //   return {

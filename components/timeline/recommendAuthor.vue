@@ -4,13 +4,9 @@
       <ul>
         <li>
           <AsideUserItem
-            v-bind="{id:'12312',aratar:'https://leancloud-gold-cdn.xitu.io/bdfecd06f90e24f88946.jpeg?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1',username:'不才',position:'123',description:'adsfasdfasdf'}"
-          />
-          <AsideUserItem
-            v-bind="{id:'12312',aratar:'https://leancloud-gold-cdn.xitu.io/bdfecd06f90e24f88946.jpeg?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1',username:'不才',position:'123',description:'adsfasdfasdf'}"
-          />
-          <AsideUserItem
-            v-bind="{id:'12312',aratar:'https://leancloud-gold-cdn.xitu.io/bdfecd06f90e24f88946.jpeg?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1',username:'不才',position:'123',description:'adsfasdfasdf'}"
+            v-for="(item, index) in userList"
+            :key="index"
+            v-bind="item"
           />
         </li>
       </ul>
@@ -27,6 +23,9 @@ import AsideBlock from "@/components/timeline/AsideBlock.vue";
 import AsideUserItem from "@/components/common/listItem/AsideUserItem.vue";
 
 export default {
+  props: {
+    userList: Array
+  },
   components: {
     AsideBlock,
     AsideUserItem

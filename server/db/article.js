@@ -22,6 +22,11 @@ const Schema = mongoose.Schema({
     type: String,
     required: true,
   },
+  // 阅读数
+  look: {
+    type: Number,
+    default: 0
+  },
   // 更新时间
   updated: {
     type: Date,
@@ -39,7 +44,7 @@ const Schema = mongoose.Schema({
   },
 });
 
-Schema.static('findAeticleByNav_id', async function ({
+Schema.static('findArticleByNav_id', async function ({
   nav_id,
   tag_id,
   limit = 10,
@@ -167,6 +172,7 @@ Schema.static('findAeticleByNav_id', async function ({
         // user_id: 1,
         // likes: 1,
         // comments: 1,
+        look: 1,
         like_size: {
           $size: "$likes"
         },
@@ -193,13 +199,9 @@ Schema.static('findAeticleByNav_id', async function ({
 
 });
 
-Schema.static('findAeticleByid', async function ({
+Schema.static('findArticleByid', async function ({
   id
 } = {}) {
-  console.log(id.length);
-  
-  console.log(typeof mongoose.Types.ObjectId(id));
-  
   return (await this.aggregate([
     {
       $project: {
@@ -286,10 +288,11 @@ Schema.static('findAeticleByid', async function ({
         user: 1,
         nav: 1,
         tags: 1,
-        content:1,
-        updated:1,
+        content: 1,
+        updated: 1,
+        look: 1,
         // user_id: 1,
-        likes: 1,
+        // likes: 1,
         comments: 1,
         like_size: {
           $size: "$likes"
@@ -302,17 +305,62 @@ Schema.static('findAeticleByid', async function ({
   ]))[0];
 });
 
+Schema.static('findArticleListByUserid', async function ({
+  id
+} = {}) {
+
+  return (await this.aggregate([
+    {
+      $project: {
+        // content: 0,
+        // updated: 0,
+        _v: 0,
+      }
+    },
+    {
+      $match: {
+        user_id: mongoose.Types.ObjectId(id)
+      }
+    },
+    //  喜欢
+    {
+      $lookup: { // 左连接
+        from: "likes",
+        localField: "_id",
+        foreignField: "article_id",
+        as: "likes"
+      }
+    },
+    {
+      $project: {
+        _id: 1,
+        title: 1,
+        date: 1,
+        // content: 0,
+        updated: 1,
+        // user_id: 1,
+        // likes: 1,
+        look: 1,
+        comments: 1,
+        like_size: {
+          $size: "$likes"
+        }
+      }
+    }
+  ]));
+});
+
 
 const Article = mongoose.model('article', Schema);
 
 // (async () => {
 //   const st_t = Date.now();
-//   console.log(JSON.stringify(await Article.findAeticleByid({
+//   console.log(JSON.stringify(await Article.findArticleListByUserid({
 //     // nav_id: "5cc3d64ea5d0aa06fed13656"
 //     // skip: 10
-//     id: '5cd12e9ddcbf719419a7da5b'
+//     id: '5cc65b55f61dba23444fef74'
 //   }), 2, 2));
-//   // console.log("====>",(await Article.findAeticleByNav_id({
+//   // console.log("====>",(await Article.findArticleByNav_id({
 //   //   nav_id: "5cc3d64ea5d0aa06fed13656"
 //   // })).length);
 

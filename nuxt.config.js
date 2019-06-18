@@ -1,14 +1,10 @@
 const pkg = require('./package')
 
-
 module.exports = {
   mode: 'universal',
 
   env: {
-    db: {
-      "url": "mongodb://localhost:27017/",
-      "dbName": "juejin"
-    }
+    
   },
 
   router: {

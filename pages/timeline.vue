@@ -19,7 +19,7 @@
       </div>
       <aside class="timeline-aside">
         <div class="timeline-aside-wrap" v-scroll="handleAside">
-          <RecommendAuthor/>
+          <RecommendAuthor :userList="userList"/>
         </div>
         <RecommendBook/>
         <AsideInfo/>
@@ -37,7 +37,6 @@ import AsideInfo from "@/components/timeline/AsideInfo.vue";
 
 export default {
   head() {
-    
     const current_nav = this.navigation.find(item => {
       return item.url == this.$route.params.url;
     });
@@ -58,11 +57,15 @@ export default {
     AsideInfo,
     NavChildren
   },
-  created() {},
+  async created() {
+    const userList = await this.$api.user.getHotSimpleUserList();
+    this.userList = userList;
+  },
   data() {
     return {
       navigation: [],
       tags: [],
+      userList: [],
       timeline: {
         articleObj: {
           list: [],
@@ -185,7 +188,7 @@ export default {
 
     // tab=深度学习&sort=popular
     async getArticleList({ page, nav_id, tag_id, sort } = {}) {
-      const articleObj = await this.$api.common.getAeticleListByNav_id({
+      const articleObj = await this.$api.common.getArticleListByNav_id({
         page,
         nav_id,
         tag_id,

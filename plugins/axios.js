@@ -9,6 +9,12 @@ const instance = axios.create({
 // 添加请求拦截器
 instance.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
+
+  if(typeof localStorage !== 'undefined'){
+    
+  }
+
+  // config.headers['Authorization'] = "Bearer " + token;
   return config;
 }, function (error) {
   // 对请求错误做些什么
@@ -22,6 +28,9 @@ instance.interceptors.response.use(function (response) {
   if (data.code !== 0) {
     throw new Error(data.message);
   }
+  if (data.token) {
+    console.log(typeof window);
+  }
   // 对响应数据做点什么
   return data;
 }, function (error) {
@@ -32,11 +41,13 @@ instance.interceptors.response.use(function (response) {
 import commonFn from './apis/common';
 import postFn from './apis/post';
 import commentFn from './apis/comment';
+import userFn from './apis/user';
 
 const common = commonFn(instance);
 const post = postFn(instance);
 const comment = commentFn(instance);
+const user = userFn(instance);
 
 export default ({ }, inject) => {
-  inject('api', { common, post, comment });
+  inject('api', { common, post, comment, user });
 }

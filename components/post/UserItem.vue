@@ -1,7 +1,8 @@
 <template>
   <div class="user">
     <nuxt-link :to="`/user/${user._id}`" class="user-avatar">
-      <img :src="user.avatar || require('@/assets/img/avatar.jpeg')" alt="#">
+      <img v-if="user.avatar" :src="user.avatar" alt="#">
+      <div v-else v-html="this.$util.avatars.init(user._id)"></div>
     </nuxt-link>
     <div class="user-main">
       <nuxt-link :to="`/user/${user._id}`" class="name">
@@ -52,7 +53,8 @@ export default {
   padding: 20px 0;
   &-avatar {
     margin-right: 10px;
-    > img {
+    > img,
+    > div {
       width: 40px;
       height: 40px;
       border-radius: 50%;

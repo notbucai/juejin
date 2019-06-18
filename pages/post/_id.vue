@@ -3,20 +3,18 @@
     <main class="article_main">
       <UserItem :user="main.user" :date="main.date" :reading="0"/>
       <article>
-        <div
-          class="hero"
-          :style="{'background-image':'url(https://user-gold-cdn.xitu.io/2019/5/14/16ab64541d22911f?imageView2/1/w/1304/h/734/q/85/format/webp/interlace/1)'}"
-        ></div>
+        <div class="hero" v-if="main.hero" :style="{'background-image':`url(${main.hero})`}"></div>
         <h1 class="title">{{main.title}}</h1>
         <div class="content" v-html="main.content"></div>
         <TagList :tags="main.tags"/>
         <UserInfo :user="main.user"/>
-        <EditInput :user="main.user"/>
-        <CommentList :comments="comments"/>
+        <!-- EditInput 的user 是登陆用户的 不止是发表用户 -->
+        <EditInput :user="main.user" :isyes="true" @btnClick="handleSubmit"/>
+        <CommentList :comments="comments" @submit="handleSubmit"/>
       </article>
     </main>
     <aside class="article_aside">
-      <About/>
+      <About :user="user"/>
     </aside>
   </section>
 </template>
@@ -33,8 +31,11 @@ export default {
   async asyncData({ route, app }) {
     const { id } = route.params;
     if ((id && id.length == 24) || id.length == 12) {
+      const main = await app.$api.post.getArticleByid(id);
+      const user = await app.$api.user.getUserInfoByid(main.user._id);
       return {
-        main: await app.$api.post.getAeticleByid(id)
+        main,
+        user
       };
     }
     // post 是文章 不是post请求
@@ -44,8 +45,7 @@ export default {
   async mounted() {
     const { id } = this.$route.params;
     const data = await this.$api.comment.getCommentListByid(id);
-    console.log(data);
-    
+
     this.comments = data;
   },
   data() {
@@ -53,6 +53,7 @@ export default {
       main: {
         _id: "",
         title: "",
+        hero: "",
         content: "",
         date: "",
         updated: "",
@@ -64,9 +65,26 @@ export default {
         comments_size: 0
       },
       comments: [],
+      user: {}
     };
   },
-  methods: {}
+  methods: {
+    handleSubmit(content, cb, comment) {
+      const submitObj = {
+        article_id: this.main._id,
+        user_id: "5d07a18cb769554cc7df81b7", // TODO 这里表示当前登陆用户 如果不存在就跳转
+        reply_user_id: null,
+        comment_id: null,
+        content: content
+      };
+      if (comment) {
+        submitObj.comment_id = comment.comment_id || comment._id || null;
+        submitObj.reply_user_id = (comment.user && comment.user._id) || null;
+      }
+      this.$api.comment.sendComment(submitObj);
+    }
+    // handleCommentReplySubmit({ content, comment }, cb) {}
+  }
 };
 </script>
 <style lang="scss" scoped>

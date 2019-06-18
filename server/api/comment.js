@@ -13,6 +13,34 @@ const getCommentListByid = async (ctx, next) => {
   }
 }
 
+// 需要权限
+const saveComment = async (ctx, next) => {
+
+  const {
+    article_id,
+    user_id,
+    reply_user_id,
+    comment_id,
+    content
+  } = ctx.request.body;
+
+  const comment = new Comment({
+    article_id,
+    user_id,
+    reply_user_id: reply_user_id || null,
+    comment_id: comment_id || null,
+    content
+  });
+
+
+  await Comment.saveComment(comment);
+
+  ctx.body = {
+    code: 0,
+    data: comment
+  }
+}
+
 module.exports = {
-  getCommentListByid
+  getCommentListByid, saveComment
 }

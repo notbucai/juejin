@@ -16,12 +16,12 @@ function sortTotype(sort) {
   return 0;
 }
 
-const getAeticleListByNav_id = async (ctx, next) => {
+const getArticleListByNav_id = async (ctx, next) => {
   const { nav_id, tag_id, page, sort } = ctx.query;
 
   const skip = (page - 1 || 0) * 10,
     order = sortTotype(sort),
-    list = await Article.findAeticleByNav_id({ nav_id: nav_id, tag_id: tag_id, skip, order });
+    list = await Article.findArticleByNav_id({ nav_id: nav_id, tag_id: tag_id, skip, order });
   ctx.body = {
     code: 0,
     data: {
@@ -31,10 +31,10 @@ const getAeticleListByNav_id = async (ctx, next) => {
   }
 }
 
-const getAeticleByid = async (ctx, next) => {
+const getArticleByid = async (ctx, next) => {
   const { id } = ctx.query;
 
-  const _article = await Article.findAeticleByid({ id });
+  const _article = await Article.findArticleByid({ id });
     // _comments = await Comment.findCommentsByArticle_id({ id });
 
   ctx.body = {
@@ -46,5 +46,5 @@ const getAeticleByid = async (ctx, next) => {
 }
 
 module.exports = {
-  getAeticleListByNav_id, getAeticleByid
+  getArticleListByNav_id, getArticleByid
 }

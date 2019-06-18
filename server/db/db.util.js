@@ -1,4 +1,5 @@
-const { url, dbName } = process.env.db || {
+const { db } = require('../../website.config');
+const { url, dbName } = db || {
   "url": "mongodb://localhost:27017/",
   "dbName": "juejin"
 };
