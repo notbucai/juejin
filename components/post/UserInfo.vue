@@ -7,14 +7,14 @@
     <div class="user-main">
       <nuxt-link :to="`/user/${user._id}`" class="name">
         {{user.username}}
-        <span>前端工程师</span>
+        <span>{{user.bio}}</span>
         <!-- 等级暂时不实现 -->
         <!-- <img
           src="https://b-gold-cdn.xitu.io/v3/static/img/lv-2.f597b88.svg"
           alt="lv-2"
         >-->
       </nuxt-link>
-      <p class="info">发布了xx篇专栏·获得点赞数123·获得阅读232323</p>
+      <p class="info">发布了{{user.articleNum}}篇专栏·获得点赞数{{user.likeNum}}·获得阅读{{user.lookNum}}</p>
     </div>
     <div class="user-btn">
       <button class="btn" @click="handleFocus">关注</button>
@@ -31,10 +31,17 @@ export default {
         return {
           _id: "",
           username: "",
-          avatar: ""
+          avatar: "",
+          bio: "",
+          likeNum: 0,
+          likeNum: 0,
+          articleNum: 0
         };
       }
     }
+  },
+  mounted() {
+    console.log(this.user);
   },
   methods: {
     handleFocus() {

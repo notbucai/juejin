@@ -51,7 +51,7 @@ Schema.static('findCommentsByArticle_id', async function ({ id } = {}) {
     {
       $sort: {
         _id: -1
-      } 
+      }
     },
     {
       $lookup: { // 左连接
@@ -141,7 +141,7 @@ Schema.static('saveComment', async function (comment) {
 
   if (reply_user_id && comment_id) {
 
-    const _comment = await this.findOne({ comment_id: ObjectId(comment_id) });
+    const _comment = await this.findOne({ _id: ObjectId(comment_id) });
     const __user = await User.findById(reply_user_id);
 
     if (!_comment) {
@@ -155,6 +155,10 @@ Schema.static('saveComment', async function (comment) {
 
   await comment.save();
 
+  comment = comment.toJSON();
+  comment.user = await User.findById(comment.user_id);
+  comment.reply_user = await User.findById(comment.reply_user_id);
+  return comment;
 });
 
 const Comment = mongoose.model('comment', Schema);

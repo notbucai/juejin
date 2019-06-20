@@ -5,17 +5,19 @@
       <i class="iconfont">&#xe608;</i>
     </span>
     <ul class="nav-list" :class="{'show':isshow}">
-      <nuxt-link to="/" class="nav-item">首页</nuxt-link>
-      <nuxt-link to="/1" class="nav-item">首页</nuxt-link>
-      <nuxt-link to="/2" class="nav-item">首页</nuxt-link>
-      <nuxt-link to="/3" class="nav-item">首页</nuxt-link>
-      <nuxt-link to="/6" class="nav-item">首页</nuxt-link>
+      <nuxt-link
+        :to="item.url"
+        class="nav-item"
+        v-for="(item) in navs"
+        :key="item.url"
+      >{{item.name}}</nuxt-link>
     </ul>
   </nav>
 </template>
 
 <script>
 export default {
+  props: { navs: Array },
   data() {
     return {
       isshow: false
@@ -63,7 +65,7 @@ export default {
       box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(177, 180, 185, 0.45);
       border-radius: 4px;
-      &.show{
+      &.show {
         display: block;
       }
     }

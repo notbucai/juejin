@@ -5,13 +5,14 @@ const { Nuxt, Builder } = require('nuxt')
 
 const router = require('./router');
 const koaBody = require('koa-body');
-const koajwt = require('koa-jwt');
-const jwtFn = require('./middleware/jwt');
+const KoaSession = require('koa-session2');
+const Store = require("./lib/Store");
+// const jwtFn = require('./middleware/jwt');
 const app = new Koa()
 
 // Import and Set Nuxt.js options
 const config = require('../nuxt.config.js');
-const websiteConfig = require('../website.config');
+// const websiteConfig = require('../website.config');
 config.dev = !(app.env === 'production');
 
 async function start() {
@@ -46,6 +47,16 @@ async function start() {
 }
 
 async function koaInit() {
+  app.keys = ['session xxx nb'];
+  const CONFIG = {
+    key: 'koa:sess',   //cookie key (default is koa:sess)
+    maxAge: 86400000,  // cookie的过期时间 maxAge in ms (default is 1 days)
+    overwrite: true,  //是否可以overwrite    (默认default true)
+    httpOnly: true, //cookie是否只有服务器端可以访问 httpOnly or not (default true)
+    signed: true,   //签名默认true
+    rolling: true,  //在每次请求时强行设置cookie，这将重置cookie过期时间（默认：false）
+    renew: false,  //(boolean) renew session when session is nearly expired,
+  };
   app
     /**
      * 捕获错误
@@ -60,7 +71,46 @@ async function koaInit() {
         };
       }
     })
+    .use(KoaSession({
+      store: new Store(),
+      key: "SESSIONID",  // default "koa:sess"
+    }))
+    .use(async (ctx, next) => {
+      //  nuxtjs 获取 req.session 而 koa-session 属于ctx 不存在于 ctx.req 
+      ctx.req.session = ctx.session;
+      await next();
+    })
+    /**
+     * 鉴权=》错误信息
+     */
+    .use(async (ctx, next) => {
+      return next().catch((err) => {
+        if (err.status === 401) {
 
+          ctx.status = 401;
+          ctx.body = {
+            code: ctx.status,
+            message: "权限问题"
+          };
+        } else {
+          throw err;
+        }
+      });
+    })
+    //  权限验证
+    .use(async (ctx, next) => {
+      //  nuxtjs 获取 req.session 而 koa-session 属于ctx 不存在于 ctx.req 
+      if (!/^(?!\/api\/verify\/).*$/.test(ctx.url)) {
+        if (ctx.session.user && ctx.session.user._id) {
+          await next();
+        } else {
+          ctx.throw(401);
+          return;
+        }
+      }else{
+        await next();
+      }
+    })
     /**
      * post数据传递
      */
@@ -78,29 +128,14 @@ async function koaInit() {
       }
     }))
     /**
-     * 鉴权=》错误信息
-     */
-    .use(async (ctx, next) => {
-      return next().catch((err) => {
-        if (err.status === 401) {
-
-          ctx.status = 401;
-          ctx.body = {
-            code: ctx.status,
-            message: "Protected resource, use Authorization header to get access"
-          };
-        } else {
-          throw err;
-        }
-      });
-    })
-    /**
      * 鉴权
      */
-    .use(koajwt(websiteConfig.jwt).unless({
-      path: [/^(?!\/api\/verify).*$/] /*不是\/api\/verify 就不鉴权 */
-    }))
-    .use(jwtFn(websiteConfig.jwt.secret))
+
+    // .use(koajwt(websiteConfig.jwt).unless({
+    //   path: [/^(?!\/api\/verify).*$/] /*不是\/api\/verify 就不鉴权 */
+    // }))
+    // .use(jwtFn(websiteConfig.jwt.secret))
+
     /**
      * 路由
      */

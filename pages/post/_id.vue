@@ -1,13 +1,13 @@
 <template>
   <section class="container article">
     <main class="article_main">
-      <UserItem :user="main.user" :date="main.date" :reading="0"/>
+      <UserItem :user="user" :date="main.date" :reading="0"/>
       <article>
         <div class="hero" v-if="main.hero" :style="{'background-image':`url(${main.hero})`}"></div>
         <h1 class="title">{{main.title}}</h1>
         <div class="content" v-html="main.content"></div>
         <TagList :tags="main.tags"/>
-        <UserInfo :user="main.user"/>
+        <UserInfo :user="user"/>
         <!-- EditInput 的user 是登陆用户的 不止是发表用户 -->
         <EditInput :user="main.user" :isyes="true" @btnClick="handleSubmit"/>
         <CommentList :comments="comments" @submit="handleSubmit"/>
@@ -28,6 +28,11 @@ import EditInput from "@/components/post/EditInput";
 import CommentList from "@/components/post/CommentList";
 
 export default {
+  head() {
+    return {
+      title: this.main.title || "error"
+    };
+  },
   async asyncData({ route, app }) {
     const { id } = route.params;
     if ((id && id.length == 24) || id.length == 12) {
@@ -69,7 +74,8 @@ export default {
     };
   },
   methods: {
-    handleSubmit(content, cb, comment) {
+    async handleSubmit(content, cb, comment) {
+      // TODO 未登陆 弹出框
       const submitObj = {
         article_id: this.main._id,
         user_id: "5d07a18cb769554cc7df81b7", // TODO 这里表示当前登陆用户 如果不存在就跳转
@@ -81,7 +87,40 @@ export default {
         submitObj.comment_id = comment.comment_id || comment._id || null;
         submitObj.reply_user_id = (comment.user && comment.user._id) || null;
       }
-      this.$api.comment.sendComment(submitObj);
+
+      try {
+        const res = await this.$api.comment.sendComment(submitObj);
+        cb(0);
+
+        let _comment;
+        if (comment) {
+          if (comment.comment_id) {
+            _comment = this.comments.find(item => {
+              return comment.comment_id === item._id;
+            });
+          } else {
+            _comment = this.comments.find(item => {
+              return comment._id === item._id;
+            });
+          }
+          _comment &&
+            _comment.two_comments.splice(_comment.two_comments.length, 0, res);
+        } else {
+          this.comments.splice(0, 0, res);
+        }
+      } catch (error) {
+        const { code, message } = error.data || {
+          code: 111,
+          message: error.message
+        };
+        if (code === 401) {
+          // TODO 打开登陆弹出框
+          this.$alert.toast({ message: "未登陆或登陆过期" });
+        } else {
+          this.$alert.toast({ message });
+        }
+        cb(401);
+      }
     }
     // handleCommentReplySubmit({ content, comment }, cb) {}
   }

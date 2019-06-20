@@ -7,18 +7,32 @@
           <img src="https://b-gold-cdn.xitu.io/v3/static/img/logo.a7995ad.svg" alt>
         </nuxt-link>
         <!-- 导航 -->
-        <Navigation/>
+        <Navigation :navs="navs"/>
         <!-- 右边 -->
         <div class="other">
           <!-- 搜索 -->
           <Search/>
           <!-- 写文章按钮 -->
-          <WordNew/>
+          <WordNew :isStat="!!user" @click="handleClick"/>
           <!-- 用户相关 -->
-          <User/>
+          <User :user="user" v-if="user"/>
+          <Auth v-else @click="handleClick"/>
         </div>
       </div>
     </header>
+    <!-- 登陆注册组件 -->
+    <Login
+      v-if="current_show_auth === 1"
+      @close="handleClick(0)"
+      @submit="handleLoginSubmit"
+      @switch="handleClick"
+    />
+    <Register
+      v-if="current_show_auth === 2"
+      @close="handleClick(0)"
+      @switch="handleClick"
+      @submit="handleRegisterSubmit"
+    />
   </div>
 </template>
 
@@ -27,13 +41,29 @@ import User from "./user";
 import WordNew from "./wordNew";
 import Navigation from "./navigation";
 import Search from "./search";
+import Auth from "./auth";
+
+import Login from "../auth/Login.vue";
+import Register from "../auth/Register";
+
+import { mapState, mapActions } from "vuex";
 export default {
   name: "jjhead",
+  props: {
+    navs: Array,
+    user: Object
+  },
   components: {
     User,
     WordNew,
     Navigation,
-    Search
+    Search,
+    Auth,
+    Login,
+    Register
+  },
+  computed: {
+    ...mapState(["current_show_auth"])
   },
   data() {
     return {
@@ -42,6 +72,10 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["change_current_show_auth", "login"]),
+    handleClick(stat) {
+      this.change_current_show_auth(stat);
+    },
     handleScroll(evt, el) {
       if (window.scrollY > 100) {
         this.isvisible = false;
@@ -59,6 +93,27 @@ export default {
         }
       }
       this.topNum = window.scrollY;
+    },
+    async handleLoginSubmit(formData) {
+      try {
+        const res = await this.$api.user.login(formData);
+        this.login(res.user);
+        this.handleClick(0);
+        this.$alert.toast({ message: "登录成功" });
+      } catch (error) {
+        this.$alert.toast({ message: error.message });
+      }
+    },
+    async handleRegisterSubmit(formData) {
+      try {
+        const res = await this.$api.user.register(formData);
+        this.handleClick(0);
+        this.$alert.toast({ message: "注册成功" });
+      } catch (error) {
+        console.log(error);
+        const { message } = error.data || error;
+        this.$alert.toast({ message: message });
+      }
     }
   }
 };

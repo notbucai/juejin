@@ -1,22 +1,35 @@
 const mongoose = require('./db.util');
-
+const ObjectId = mongoose.Types.ObjectId
 const Schema = mongoose.Schema({
-  // 文章id
-  article_id: {
-    type: mongoose.Types.ObjectId,
+  // 目标id
+  target_id: {
+    type: ObjectId,
     required: true,
   },
   // 用户id
   user_id: {
-    type: mongoose.Types.ObjectId,
+    type: ObjectId,
     required: true,
   },
   // 点赞时间
   date: {
     type: Date,
     required: true,
-    default: Date.now 
+    default: Date.now
   },
+});
+
+Schema.static('like', async function (like) {
+
+  const _like = await this.findOne({
+    user_id: like.user_id, target_id: like.target_id
+  });
+  if (_like) {
+    throw new Error("你已经操作过了");
+  }
+
+  await like.save();
+
 });
 
 const Like = mongoose.model('like', Schema);

@@ -64,6 +64,7 @@ Schema.static('findUserById', async function (id) {
     extra.likeNum += item.like_size || 0;
     extra.lookNum += item.look || 0;
   });
+  extra.articleNum = articleList.length;
 
   return {
     ...user.toJSON(),
@@ -74,7 +75,7 @@ Schema.static('findUserById', async function (id) {
 
 Schema.static('findHotUser', async function () {
 
-  const userList = (await this.find({},{userpass:0}));
+  const userList = (await this.find({}, { userpass: 0 }));
   const resList = [];
 
   for (let i = 0; i < userList.length; i++) {
@@ -106,6 +107,36 @@ Schema.static('login', async function ({ loginName, loginPass }) {
   if (!user) {
     throw new Error("账号或密码错误");
   }
+
+  return user;
+
+});
+
+Schema.static('register', async function (user) {
+
+  if (!user.username || !user.userphone || !user.userpass) {
+    throw new Error("用户名和手机号还有密码不能为空");
+  }
+
+  const _user = await this.findOne({
+    $or: [
+      { username: user.username },
+      { userphone: user.userphone }
+    ]
+  });
+
+  if (_user) {
+    if (_user.username === user.username) {
+      throw new Error("该用户名已存在");
+    }
+    if (_user.userphone === user.userphone) {
+      throw new Error("该手机号已经注册");
+    }
+  }
+
+  user.userpass = encryption.md5(user.userpass);
+
+  await user.save();
 
   return user;
 

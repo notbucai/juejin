@@ -13,7 +13,7 @@
         <nuxt-link :to="{query:{...$route.query,sort:'hottest'}}" :class="{on:on==5}">历史最热</nuxt-link>
       </div>
     </header>
-    <ArticleItem v-for="item in list" :key="item._id" v-bind="item"/>
+    <ArticleItem v-for="item in list" :key="item._id" v-bind="item" @like="handleLike(item)"/>
     <Skeleton01 v-if="!list || !list.length"/>
   </div>
 </template>
@@ -40,6 +40,18 @@ export default {
         return 2;
       }
       return 0;
+    }
+  },
+  methods:{
+    async handleLike(item){
+      try {
+        await this.$api.like.like(item._id);
+        this.$alert.toast({ message: "成功" });
+        item.like_size++;
+      } catch (error) {
+        const { message } = error.data || error;
+        this.$alert.toast({ message });
+      }
     }
   }
 };

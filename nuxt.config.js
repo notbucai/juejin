@@ -17,7 +17,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    titleTemplate: "%s",
+    titleTemplate: "%s - 掘金",
     htmlAttrs:{
       lang: 'zh'
     },
@@ -52,6 +52,7 @@ module.exports = {
     '@/plugins/directive.js',
     '@/plugins/axios.js',
     '@/plugins/utils.js',
+    '@/plugins/alert',
   ],
 
   /*

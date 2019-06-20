@@ -13,6 +13,7 @@
           spellcheck="false"
           placeholder="请输入"
           :class="{empty:!content||!content.length}"
+          ref="input"
           @input="handleInput"
           @focus="isShow = true"
           @blur="isShow = false"
@@ -67,11 +68,15 @@ export default {
       }
     }
   },
+
   methods: {
     handleInput(e) {
-      this.content = e.target.innerHTML;
+      this.content = this.$refs["input"].innerHTML;
     },
     handleSubmit() {
+      if (!this.content || this.content.length <= 0) {
+        return;
+      }
       if (this.isOk !== 1) {
         this.isOk = 1;
         this.$emit("btnClick", this.content, this.handleStatus);
@@ -81,6 +86,7 @@ export default {
       this.isOk = 0;
       if (stat == 0) {
         this.content = "";
+        this.$refs["input"].innerHTML = "";
       } else {
         this.isOk = 2;
       }

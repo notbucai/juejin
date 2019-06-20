@@ -16,5 +16,8 @@ export default (axios) => {
         }
       })).data;
     },
+    async code(phone) {
+      return (await axios.get(`/common/code?phone=${phone}`)).data;
+    },
   }
 }

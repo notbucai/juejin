@@ -8,7 +8,11 @@ const { getTagsByNavId } = require('./api/tag');
 const article = require('./api/article');
 const comment = require('./api/comment');
 const user = require('./api/user');
-// 凡是url 中以 verify 开头的都要 通过jwt 
+const common = require('./api/common');
+const like = require('./api/like');
+// 凡是url 中以 verify 开头的都要 通过验证
+// 公共
+router.get('/common/code', common.code);
 // 全局相关的
 router.get('/navigation', navigation);
 router.get('/getTagsByNavId', getTagsByNavId);
@@ -23,6 +27,9 @@ router.get('/user/getHotSimpleUserList', user.getHotSimpleUserList);
 router.get('/user/getHotUserList', user.getHotUserList);
 router.get('/user/getUserById', user.getUserById);
 router.post('/user/login', user.login);
+router.post('/user/register', user.register);
+// 点赞 喜欢
+router.get('/verify/like/like', like.like);
 
 
 module.exports = router;

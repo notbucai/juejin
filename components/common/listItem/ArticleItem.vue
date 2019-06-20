@@ -19,7 +19,7 @@
         <nuxt-link target="_blank" :to="`/post/${_id}`">{{title}}</nuxt-link>
       </div>
       <div class="action">
-        <div class="action-item">
+        <div class="action-item" @click.prevent="handleLike">
           <i class="iconfont">&#xe604;</i>
           <span>{{like_size}}</span>
         </div>
@@ -51,6 +51,9 @@ export default {
   methods: {
     moment(date) {
       return this.$util.moment.relativeNow(date);
+    },
+    handleLike() {
+      this.$emit('like');
     }
   }
 };

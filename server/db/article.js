@@ -147,7 +147,7 @@ Schema.static('findArticleByNav_id', async function ({
       $lookup: { // 左连接
         from: "likes",
         localField: "_id",
-        foreignField: "article_id",
+        foreignField: "target_id",
         as: "likes"
       }
     },
@@ -266,7 +266,7 @@ Schema.static('findArticleByid', async function ({
       $lookup: { // 左连接
         from: "likes",
         localField: "_id",
-        foreignField: "article_id",
+        foreignField: "target_id",
         as: "likes"
       }
     },
@@ -327,7 +327,7 @@ Schema.static('findArticleListByUserid', async function ({
       $lookup: { // 左连接
         from: "likes",
         localField: "_id",
-        foreignField: "article_id",
+        foreignField: "target_id",
         as: "likes"
       }
     },

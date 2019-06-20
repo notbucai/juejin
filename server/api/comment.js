@@ -33,11 +33,11 @@ const saveComment = async (ctx, next) => {
   });
 
 
-  await Comment.saveComment(comment);
+  const _comment = await Comment.saveComment(comment);
 
   ctx.body = {
     code: 0,
-    data: comment
+    data: _comment
   }
 }
 

@@ -13,5 +13,11 @@ export default (axios) => {
     async getHotSimpleUserList() {
       return (await axios.get(basePath + "/getHotSimpleUserList")).data;
     },
+    async login({ loginPass, loginName }) {
+      return (await axios.post(basePath + "/login", { loginPass, loginName })).data;
+    },
+    async register({ username, userphone, userpass, code }) {
+      return (await axios.post(basePath + "/register", { username, userphone, userpass, code: parseInt(code) })).data;
+    },
   }
 }

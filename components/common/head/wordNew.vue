@@ -1,14 +1,14 @@
 <template>
   <div class="wordNew">
     <!-- 没有登陆时 -->
-    <div class="warp warp-no" :class="{'warp-yes': isStat}">
+    <div class="warp warp-no" v-if="isStat" :class="{'warp-yes': isStat}">
       <i class="iconfont">&#xe605;</i>
       写文章
     </div>
     <!-- TODO: 以下功能放弃 -->
     <!-- 未登陆时弹出层 -->
     <!-- 登陆时 -->
-    <!-- <div class="warp warp-yes" v-else>写文章</div> -->
+    <div class="warp warp-yes" v-else @click="handleClick()">写文章</div>
   </div>
 </template>
 
@@ -16,6 +16,11 @@
 export default {
   props: {
     isStat: Boolean
+  },
+  methods: {
+    handleClick() {
+      this.$emit("click", 1);
+    }
   }
 };
 </script>

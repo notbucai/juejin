@@ -61,9 +61,9 @@ export default {
       type: Object,
       default() {
         return {
-          _id: [String, Number],
-          username: String,
-          avatar: String
+          _id: "",
+          username: "",
+          avatar: ""
         };
       }
     }

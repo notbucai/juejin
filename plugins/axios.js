@@ -10,11 +10,11 @@ const instance = axios.create({
 instance.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
 
-  if(typeof localStorage !== 'undefined'){
-    
-  }
+  // if (typeof localStorage !== 'undefined') {
+  //   const token = localStorage.getItem('token');
+  //   config.headers['Authorization'] = "Bearer " + token;
+  // }
 
-  // config.headers['Authorization'] = "Bearer " + token;
   return config;
 }, function (error) {
   // 对请求错误做些什么
@@ -26,28 +26,32 @@ instance.interceptors.response.use(function (response) {
   const data = response.data;
 
   if (data.code !== 0) {
-    throw new Error(data.message);
+    throw { data };
   }
-  if (data.token) {
-    console.log(typeof window);
-  }
+  // if (data.token) {
+  //   if (typeof localStorage !== 'undefined') {
+  //     localStorage.setItem('token', data.token);
+  //   }
+  // }
   // 对响应数据做点什么
   return data;
 }, function (error) {
   // 对响应错误做点什么
-  return Promise.reject(error);
+  return Promise.reject(error.response);
 });
 
 import commonFn from './apis/common';
 import postFn from './apis/post';
 import commentFn from './apis/comment';
 import userFn from './apis/user';
+import likeFn from './apis/like';
 
 const common = commonFn(instance);
 const post = postFn(instance);
 const comment = commentFn(instance);
 const user = userFn(instance);
+const like = likeFn(instance);
 
 export default ({ }, inject) => {
-  inject('api', { common, post, comment, user });
+  inject('api', { common, post, comment, user,like });
 }
