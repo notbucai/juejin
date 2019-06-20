@@ -4,7 +4,7 @@ module.exports = {
   mode: 'universal',
 
   env: {
-    
+
   },
 
   router: {
@@ -18,7 +18,7 @@ module.exports = {
   */
   head: {
     titleTemplate: "%s - 掘金",
-    htmlAttrs:{
+    htmlAttrs: {
       lang: 'zh'
     },
     meta: [
@@ -71,6 +71,9 @@ module.exports = {
     /*
     ** You can extend webpack config here
     */
+    analyze: {
+      analyzerMode: 'static'
+    },
     extend(config, ctx) {
 
     }
