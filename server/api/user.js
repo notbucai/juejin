@@ -37,6 +37,10 @@ const getUserById = async (ctx, next) => {
   }
 }
 
+const currentUser = async (ctx, next) => {
+  console.log(ctx);
+}
+
 const login = async (ctx, next) => {
   const { loginName, loginPass } = ctx.request.body;
   const user = await User.login({ loginName, loginPass });
@@ -81,5 +85,5 @@ const register = async (ctx, next) => {
 }
 
 module.exports = {
-  getHotSimpleUserList, getHotUserList, getUserById, login, register
+  getHotSimpleUserList, getHotUserList, getUserById, login, register, currentUser
 }

@@ -33,7 +33,7 @@ export const mutations = {
 export const actions = {
   nuxtServerInit({ commit }, { req }) {
     if (req.session && req.session.user) {
-      commit('user', req.session.user)
+      commit('user', req.session.user);
     }
   },
   change_current_show_auth({ commit }, auth) {
@@ -51,6 +51,6 @@ export const actions = {
   },
   login({ commit }, user) {
     commit("user", user);
-    localStorage.setItem('user', JSON.stringify(user));
+    // localStorage.setItem('user', JSON.stringify(user));
   }
 };

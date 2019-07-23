@@ -60,7 +60,21 @@ module.exports = {
   */
   modules: [
     '@nuxtjs/style-resources',
+    // '@nuxtjs/axios',
+    // '@nuxtjs/auth'
   ],
+
+  // auth: {
+  //   strategies: {
+  //     local: {
+  //       endpoints: {
+  //         login: { url: '/user/login', method: 'post', propertyName: 'token' },
+  //       },
+  //       tokenRequired: true,
+  //       tokenType: 'bearer'
+  //     }
+  //   }
+  // },
   styleResources: {
     scss: '@/assets/css/common.scss',
   },

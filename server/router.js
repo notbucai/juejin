@@ -28,6 +28,7 @@ router.get('/user/getHotUserList', user.getHotUserList);
 router.get('/user/getUserById', user.getUserById);
 router.post('/user/login', user.login);
 router.post('/user/register', user.register);
+router.post('/user/user', user.currentUser);
 // 点赞 喜欢
 router.get('/verify/like/like', like.like);
 
