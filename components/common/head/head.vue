@@ -4,19 +4,19 @@
       <div class="container">
         <!-- logo -->
         <nuxt-link to="/" class="logo">
-          <img src="https://b-gold-cdn.xitu.io/v3/static/img/logo.a7995ad.svg" alt>
+          <img src="https://b-gold-cdn.xitu.io/v3/static/img/logo.a7995ad.svg" alt />
         </nuxt-link>
         <!-- 导航 -->
-        <Navigation :navs="navs"/>
+        <Navigation :navs="navs" />
         <!-- 右边 -->
         <div class="other">
           <!-- 搜索 -->
-          <Search/>
+          <Search />
           <!-- 写文章按钮 -->
-          <WordNew :isStat="!!user" @click="handleClick"/>
+          <WordNew :isStat="!!user" @click="handleClick" />
           <!-- 用户相关 -->
-          <User :user="user" v-if="user"/>
-          <Auth v-else @click="handleClick"/>
+          <User :user="user" v-if="user" />
+          <Auth v-else @click="handleClick" />
         </div>
       </div>
     </header>
@@ -24,14 +24,12 @@
     <Login
       v-if="current_show_auth === 1"
       @close="handleClick(0)"
-      @submit="handleLoginSubmit"
       @switch="handleClick"
     />
     <Register
       v-if="current_show_auth === 2"
       @close="handleClick(0)"
       @switch="handleClick"
-      @submit="handleRegisterSubmit"
     />
   </div>
 </template>
@@ -94,27 +92,6 @@ export default {
       }
       this.topNum = window.scrollY;
     },
-    async handleLoginSubmit(formData) {
-      try {
-        const res = await this.$api.user.login(formData);
-        this.login(res.user);
-        this.handleClick(0);
-        this.$alert.toast({ message: "登录成功" });
-      } catch (error) {
-        this.$alert.toast({ message: error.message });
-      }
-    },
-    async handleRegisterSubmit(formData) {
-      try {
-        const res = await this.$api.user.register(formData);
-        this.handleClick(0);
-        this.$alert.toast({ message: "注册成功" });
-      } catch (error) {
-        console.log(error);
-        const { message } = error.data || error;
-        this.$alert.toast({ message: message });
-      }
-    }
   }
 };
 </script>

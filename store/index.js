@@ -18,7 +18,8 @@ export const state = () => ({
     }
   ],
   user: null,
-  current_show_auth: 0
+  current_show_auth: 0,
+  headFlag: true,
 });
 
 export const mutations = {

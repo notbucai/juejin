@@ -3,7 +3,7 @@
     <div class="auth_main">
       <div class="iconfont auth_close" @click="handleClose">&#xea13;</div>
       <div class="auth_stat">
-        <img src="https://b-gold-cdn.xitu.io/v3/static/img/normal.0447fe9.png" alt="show">
+        <img src="https://b-gold-cdn.xitu.io/v3/static/img/normal.0447fe9.png" alt="show" />
       </div>
       <form action="#" method="post" class="auth_form" @submit.prevent="handleSubmit">
         <div class="form-title">登录</div>
@@ -13,7 +13,7 @@
             :class="{error:verify.name}"
             v-model="formData.loginName"
             placeholder="请输入手机号或用户名"
-          >
+          />
         </div>
         <div class="form-item">
           <input
@@ -21,10 +21,10 @@
             :class="{error:verify.pass}"
             v-model="formData.loginPass"
             placeholder="请输入密码"
-          >
+          />
         </div>
         <div class="form-item">
-          <button :disabled="submiting">{{submiting?'登录中':'登录'}}</button>
+          <button type="submit" :disabled="submiting">{{submiting?'登录中':'登录'}}</button>
         </div>
         <div class="form-item">
           <span class="form-left">
@@ -69,6 +69,20 @@ export default {
     handleClose() {
       this.$emit("close");
     },
+
+    async handleLoginSubmit(formData) {
+      try {
+        const res = await this.$api.user.login(formData);
+        this.login(res.user);
+        this.handleClose();
+        this.$alert.toast({ message: "登录成功" });
+      } catch (error) {
+        this.$alert.toast({
+          message: error.message || (error.data && error.data.message)
+        });
+      }
+    },
+
     async handleSubmit() {
       // TODO 验证
       if (this.submiting) {
@@ -88,11 +102,10 @@ export default {
         this.submiting = false;
         return;
       }
-      this.$emit("submit", this.formData);
+      await this.handleLoginSubmit(this.formData);
       setTimeout(() => {
         this.submiting = false;
       }, 500);
-
     }
   }
 };

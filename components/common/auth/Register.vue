@@ -10,7 +10,7 @@
             :class="{error:verify.name}"
             v-model="formData.username"
             placeholder="请输入用户名"
-          >
+          />
         </div>
         <div class="form-item">
           <input
@@ -18,7 +18,7 @@
             :class="{error:verify.phone}"
             v-model="formData.userphone"
             placeholder="请输入手机号"
-          >
+          />
         </div>
 
         <div class="form-item" v-show="isphone">
@@ -28,7 +28,7 @@
             v-model="formData.code"
             placeholder="请输入验证码"
             maxlength="6"
-          >
+          />
           <span class="form-right position">
             <span class="form-action" @click="handleGetCode">{{codeText}}</span>
           </span>
@@ -39,7 +39,7 @@
             :class="{error:verify.pass}"
             v-model="formData.userpass"
             placeholder="请输入密码"
-          >
+          />
         </div>
         <div class="form-item">
           <button :disabled="submiting">{{submiting?'注册中':'注册'}}</button>
@@ -98,7 +98,6 @@ export default {
     },
     async handleGetCode() {
       // 判断手机号是否正确
-
       if (!/^1[3456789]\d{9}$/.test(this.formData.userphone)) {
         this.verify.phone = true;
         return;
@@ -138,6 +137,19 @@ export default {
       // 提示用户
       // 计时停止 允许点击
     },
+    async handleRegisterSubmit(formData) {
+      try {
+        const res = await this.$api.user.register(formData);
+        this.handleClose();
+        this.$alert.toast({ message: "注册成功" });
+      } catch (error) {
+        console.log(error);
+        const { message } = error.data || error;
+        this.$alert.toast({
+          message: error.message || (error.data && error.data.message)
+        });
+      }
+    },
     async handleSubmit() {
       // TODO 验证
       if (this.submiting) {
@@ -146,7 +158,6 @@ export default {
       this.submiting = true;
 
       const { username, userphone, userpass, code } = this.formData;
-      console.log(username, userphone, userpass, code);
 
       if (!username) {
         this.verify.name = true;
@@ -169,9 +180,7 @@ export default {
         this.submiting = false;
         return;
       }
-
-      this.$emit("submit", this.formData);
-
+      await this.handleRegisterSubmit(this.formData);
       setTimeout(() => {
         this.submiting = false;
       }, 500);
