@@ -19,5 +19,11 @@ export default (axios) => {
     async register({ username, userphone, userpass, code }) {
       return (await axios.post(basePath + "/register", { username, userphone, userpass, code: parseInt(code) })).data;
     },
+    async repass({ userphone, userpass, code }) {
+      return (await axios.post(basePath + "/repass", { userphone, userpass, code: parseInt(code) })).data;
+    },
+    async logout() {
+      return (await axios.post(basePath + "/logout", null)).data;
+    },
   }
 }

@@ -42,7 +42,7 @@
           />
         </div>
         <div class="form-item">
-          <button :disabled="submiting">{{submiting?'注册中':'注册'}}</button>
+          <button type="submit" :disabled="submiting">{{submiting?'注册中':'注册'}}</button>
         </div>
         <div class="form-item center">
           <span class="form-action" @click="$emit('switch',1)">已有账号登陆</span>

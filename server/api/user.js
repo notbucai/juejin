@@ -84,6 +84,54 @@ const register = async (ctx, next) => {
   }
 }
 
+const repass = async (ctx, next) => {
+  const { userphone, userpass, code } = ctx.request.body;
+
+  const validation = ctx.session.validation;
+
+  if (!validation) {
+    throw new Error("请先获取验证码");
+  }
+
+  const v = validation;
+
+  if (v.phone !== userphone) {
+    throw new Error("手机号和获取验证手机不匹配");
+  }
+
+  if (v.code !== parseInt(code) || v.now <= Date.now()) {
+    throw new Error("验证码出错或验证码已超时");
+  }
+
+  await User.repass({ userphone, userpass });
+
+  ctx.session.validation = null;
+
+  ctx.session.user = null;
+
+  ctx.body = {
+    code: 0,
+    data: "重置成功，请重新登陆"
+  }
+}
+
+const logout = async (ctx, next) => {
+
+  ctx.session.validation = null;
+  ctx.session.user = null;
+  
+  ctx.body = {
+    code: 0,
+    data: "登出成功，请重新登陆"
+  }
+}
 module.exports = {
-  getHotSimpleUserList, getHotUserList, getUserById, login, register, currentUser
+  getHotSimpleUserList,
+  getHotUserList,
+  getUserById,
+  login,
+  register,
+  currentUser,
+  repass,
+  logout,
 }

@@ -142,6 +142,23 @@ Schema.static('register', async function (user) {
 
 });
 
+Schema.static('repass', async function ({ userphone, userpass }) {
+  
+  if (!userphone || !userpass) {
+    throw new Error("手机号还有密码不能为空");
+  }
+
+  const _user = await this.findOne({ userphone: userphone });
+
+  if (!_user) {
+    throw new Error("该用户未注册");
+  }
+
+  userpass = encryption.md5(userpass);
+
+  await this.updateOne({ _id: _user._id }, { userpass });
+
+});
 const User = mongoose.model('user', Schema);
 
 module.exports = User;

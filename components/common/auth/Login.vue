@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   name: "jjlogin",
   props: {},
@@ -66,6 +67,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["change_current_show_auth", "login"]),
     handleClose() {
       this.$emit("close");
     },

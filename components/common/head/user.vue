@@ -6,7 +6,7 @@
     <div class="avatar">
       <img
         src="https://mirror-gold-cdn.xitu.io/16a21359c366c2cda5c?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1"
-      >
+      />
     </div>
     <transition :duration="200" name="nav-menu">
       <ul class="nav-menu" v-if="isshow">
@@ -65,11 +65,9 @@
           </li>
         </div>
         <div class="nav-menu-item-group">
-          <li class="nav-menu-item">
-            <nuxt-link to="/">
-              <i class="iconfont">&#xe622;</i>
-              <span>登出</span>
-            </nuxt-link>
+          <li class="nav-menu-item item" @click="handleLogout">
+            <i class="iconfont">&#xe622;</i>
+            <span>登出</span>
           </li>
         </div>
       </ul>
@@ -85,6 +83,10 @@ export default {
     };
   },
   methods: {
+    async handleLogout(){
+      await this.$api.user.logout();
+      window.location.href = "/";
+    },
     handleClickShow(event) {
       this.isshow = true;
       document.addEventListener("click", this.handleClickHide);
@@ -108,6 +110,7 @@ export default {
   margin-left: 15px;
   width: 30px;
   height: 30px;
+  cursor: pointer;
   img {
     width: 30px;
     height: 30px;
@@ -149,7 +152,8 @@ export default {
     }
   }
   &-item {
-    a {
+    a,&.item {
+      cursor: pointer;
       display: block;
       color: $fontColor;
       padding: 12px 14px;
