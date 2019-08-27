@@ -1,12 +1,8 @@
 <template>
   <div class="user" @click.stop="handleClickShow">
-    <nuxt-link to="/xxs" class="msg">
-      <i class="iconfont">&#xe98a;</i>
-    </nuxt-link>
     <div class="avatar">
-      <img
-        src="https://mirror-gold-cdn.xitu.io/16a21359c366c2cda5c?imageView2/1/w/100/h/100/q/85/format/webp/interlace/1"
-      />
+      <img :src="user.avatar" v-if="user.avatar" />
+      <div v-else v-html="$util.avatars.init(user._id)"></div>
     </div>
     <transition :duration="200" name="nav-menu">
       <ul class="nav-menu" v-if="isshow">
@@ -76,14 +72,19 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   data() {
     return {
       isshow: false
     };
   },
+  computed: {
+    ...mapState(["user"])
+  },
   methods: {
-    async handleLogout(){
+    async handleLogout() {
       await this.$api.user.logout();
       window.location.href = "/";
     },
@@ -111,21 +112,17 @@ export default {
   width: 30px;
   height: 30px;
   cursor: pointer;
+  border-radius: 50%;
+  overflow: hidden;
   img {
     width: 30px;
     height: 30px;
     border-radius: 50%;
   }
 }
-.msg {
-  margin-left: 10px;
-  .iconfont {
-    color: $fontColor;
-    font-size: 20px;
-  }
-}
 .nav-menu {
   position: absolute;
+  z-index: 500;
   top: 101%;
   right: 0;
   width: 154px;
@@ -152,7 +149,8 @@ export default {
     }
   }
   &-item {
-    a,&.item {
+    a,
+    &.item {
       cursor: pointer;
       display: block;
       color: $fontColor;

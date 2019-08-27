@@ -7,6 +7,8 @@
         @blur="handleShowAndHide(false)"
         placeholder="搜索更新啦"
         class="search-input"
+        name="key"
+        :value="$route.query.key || ''"
       >
       <i class="iconfont search-icon">&#xe632;</i>
     </form>

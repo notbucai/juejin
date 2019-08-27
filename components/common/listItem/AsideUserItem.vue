@@ -2,7 +2,7 @@
   <nuxt-link class="user_item" :to="`/user/${_id}`">
     <div class="user-aratar">
       <img v-if="aratar" :src="aratar" :alt="username">
-      <div v-else v-html="this.$util.avatars.init(_id)"></div>
+      <div v-else v-html="$util.avatars.init(_id)"></div>
     </div>
     <div class="user-info">
       <div class="username">{{username}}</div>

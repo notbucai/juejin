@@ -53,6 +53,7 @@ module.exports = {
     '@/plugins/axios.js',
     '@/plugins/utils.js',
     '@/plugins/alert',
+    { src: '@/plugins/vue-mavon-editor', srr: false },
   ],
 
   /*

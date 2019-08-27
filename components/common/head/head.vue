@@ -14,6 +14,10 @@
           <Search />
           <!-- 写文章按钮 -->
           <WordNew :isStat="!!user" @click="handleClick" />
+          <!-- 消息 -->
+          <nuxt-link to="/xxs" class="msg">
+            <i class="iconfont">&#xe98a;</i>
+          </nuxt-link>
           <!-- 用户相关 -->
           <User :user="user" v-if="user" />
           <Auth v-else @click="handleClick" />
@@ -21,16 +25,8 @@
       </div>
     </header>
     <!-- 登陆注册组件 -->
-    <Login
-      v-if="current_show_auth === 1"
-      @close="handleClick(0)"
-      @switch="handleClick"
-    />
-    <Register
-      v-if="current_show_auth === 2"
-      @close="handleClick(0)"
-      @switch="handleClick"
-    />
+    <Login v-if="current_show_auth === 1" @close="handleClick(0)" @switch="handleClick" />
+    <Register v-if="current_show_auth === 2" @close="handleClick(0)" @switch="handleClick" />
   </div>
 </template>
 
@@ -48,8 +44,7 @@ import { mapState, mapActions } from "vuex";
 export default {
   name: "jjhead",
   props: {
-    navs: Array,
-    user: Object
+    navs: Array
   },
   components: {
     User,
@@ -61,7 +56,7 @@ export default {
     Register
   },
   computed: {
-    ...mapState(["current_show_auth"])
+    ...mapState(["current_show_auth", "user"])
   },
   data() {
     return {
@@ -91,7 +86,7 @@ export default {
         }
       }
       this.topNum = window.scrollY;
-    },
+    }
   }
 };
 </script>
@@ -145,5 +140,12 @@ export default {
   display: flex;
   height: 100%;
   align-items: center;
+}
+.msg {
+  margin-left: 10px;
+  .iconfont {
+    color: $fontColor;
+    font-size: 20px;
+  }
 }
 </style>

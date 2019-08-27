@@ -19,6 +19,7 @@ router.get('/getTagsByNavId', getTagsByNavId);
 router.get('/getArticleListByNav_id', article.getArticleListByNav_id);
 // 文章相关
 router.get('/post/getArticleByid', article.getArticleByid);
+router.get('/post/getArticleListByKey', article.getArticleListByKey);
 // 评论相关
 router.get('/comment/getCommentListByid', comment.getCommentListByid);
 router.post('/verify/comment/saveComment', comment.saveComment);

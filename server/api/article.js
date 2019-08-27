@@ -31,11 +31,26 @@ const getArticleListByNav_id = async (ctx, next) => {
   }
 }
 
+const getArticleListByKey = async (ctx, next) => {
+  const { key, page } = ctx.query;
+
+  const skip = (page - 1 || 0) * 10,
+    list = await Article.findKeyAll(key, skip);
+  ctx.body = {
+    code: 0,
+    data: {
+      list,
+      hasNextPage: list && list.length >= 10
+    }
+  }
+}
+
+
 const getArticleByid = async (ctx, next) => {
   const { id } = ctx.query;
 
   const _article = await Article.findArticleByid({ id });
-    // _comments = await Comment.findCommentsByArticle_id({ id });
+  // _comments = await Comment.findCommentsByArticle_id({ id });
 
   ctx.body = {
     code: 0,
@@ -46,5 +61,5 @@ const getArticleByid = async (ctx, next) => {
 }
 
 module.exports = {
-  getArticleListByNav_id, getArticleByid
+  getArticleListByNav_id, getArticleByid, getArticleListByKey
 }

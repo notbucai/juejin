@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 头部组件 -->
-    <Head :navs="navs" :user="user"/>
+    <Head :navs="navs"/>
     <!-- 路由 -->
     <nuxt/>
   </div>
@@ -18,7 +18,7 @@ export default {
     Head
   },
   computed: {
-    ...mapState(["navs", "user"])
+    ...mapState(["navs"])
   }
 };
 </script>
