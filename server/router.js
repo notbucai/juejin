@@ -10,6 +10,7 @@ const comment = require('./api/comment');
 const user = require('./api/user');
 const common = require('./api/common');
 const like = require('./api/like');
+const upload = require('./api/upload');
 // 凡是url 中以 verify 开头的都要 通过验证
 // 公共
 router.get('/common/code', common.code);
@@ -29,11 +30,14 @@ router.get('/user/getHotUserList', user.getHotUserList);
 router.get('/user/getUserById', user.getUserById);
 router.post('/user/login', user.login);
 router.post('/user/register', user.register);
-router.post('/user/user', user.currentUser);
+router.post('/verify/user/user', user.currentUser);
 router.post('/user/repass', user.repass);
 router.post('/user/logout', user.logout);
 // 点赞 喜欢
 router.get('/verify/like/like', like.like);
+// 文件上传
+router.get('/verify/upload/img', upload.img);
+
 
 
 module.exports = router;

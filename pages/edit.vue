@@ -9,8 +9,8 @@
         <div class="options" v-show="heroStat">
           <h3>添加封面大图</h3>
           <div class="upload">
-            <div class="noupload">
-              
+            <div class="noupload" @click="handleFileInputOpen">
+              <input type="file" ref="upload" @change="handleUploadImg" hidden>
             </div>
           </div>
         </div>
@@ -73,6 +73,18 @@ export default {
     };
   },
   methods: {
+    handleFileInputOpen(){
+      this.$refs['upload'].click();
+    },
+    async handleUploadImg(event){
+      const file = event.target.files[0];
+      if(!file){
+        return;
+      }
+      const data = await this.$api.upload.img(file);
+      console.log(data);
+      this.$alert("123");
+    },
     handleHeroOpen() {
       this.heroStat = true;
     },
@@ -214,8 +226,23 @@ export default {
       color: #888;
     }
     > .upload {
-      .img {
-
+      .noupload {
+        width: 100%;
+        height: 100px;
+        background-color: #f0f0f0;
+        border-radius: 4px;
+        position: relative;
+        margin-top: 10px;
+        cursor: pointer;
+        &::after{
+          content: "点击上传图片";
+          color: #999;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
       }
     }
     > .box {

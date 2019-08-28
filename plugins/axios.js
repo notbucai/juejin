@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: process.env.NODE_ENV === 'development'? 'http://127.0.0.1:3000/api':'http://jianshu.ncgame.cc/api',
+  baseURL: process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:3000/api' : 'http://jianshu.ncgame.cc/api',
   timeout: 3000,
   headers: { 'X-Custom-Header': 'foobar' }
 });
@@ -40,18 +40,24 @@ instance.interceptors.response.use(function (response) {
   return Promise.reject(error.response);
 });
 
+const config = {
+  
+};
+
 import commonFn from './apis/common';
 import postFn from './apis/post';
 import commentFn from './apis/comment';
 import userFn from './apis/user';
 import likeFn from './apis/like';
+import uploadFn from './apis/upload';
 
 const common = commonFn(instance);
 const post = postFn(instance);
 const comment = commentFn(instance);
 const user = userFn(instance);
 const like = likeFn(instance);
+const upload = uploadFn(instance);
 
 export default ({ }, inject) => {
-  inject('api', { common, post, comment, user,like });
+  inject('api', { common, post, comment, user, like, upload, config });
 }
