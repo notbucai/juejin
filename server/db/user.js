@@ -19,7 +19,10 @@ const Schema = mongoose.Schema({
   userphone: {
     type: String,
     unique: true,
-    required: true,
+  },
+  //  邮箱
+  useremail: {
+    type: String,
   },
   // 头像
   avatar: {
@@ -43,6 +46,9 @@ const Schema = mongoose.Schema({
     required: true,
     default: Date.now
   },
+  github_id: {
+    type: Number,
+  }
 });
 
 
@@ -143,7 +149,7 @@ Schema.static('register', async function (user) {
 });
 
 Schema.static('repass', async function ({ userphone, userpass }) {
-  
+
   if (!userphone || !userpass) {
     throw new Error("手机号还有密码不能为空");
   }
@@ -159,6 +165,28 @@ Schema.static('repass', async function ({ userphone, userpass }) {
   await this.updateOne({ _id: _user._id }, { userpass });
 
 });
+
+Schema.static('thirdparty_login', async function (user, type = 'gethub') {
+  const query = {
+    $or: [
+      { username: user.username }
+    ]
+  };
+  const queryGithub = {};
+  const key = type + '_id';
+  queryGithub[key] = user[key];
+  query.$or.push(queryGithub);
+
+  let _user = await this.findOne(query);
+  if (!_user) {
+    user.userpass = encryption.md5(((Math.random() * Date.now()) | 0).toString());
+    await user.save();
+    _user = user;
+  }
+
+  return _user;
+});
+
 const User = mongoose.model('user', Schema);
 
 module.exports = User;

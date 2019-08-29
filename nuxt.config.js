@@ -2,9 +2,10 @@ const pkg = require('./package')
 
 module.exports = {
   mode: 'universal',
+  dev: (process.env.NODE_ENV !== 'production'),
 
   env: {
-
+    auth: require('./auth.config'),
   },
 
   router: {

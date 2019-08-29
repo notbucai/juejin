@@ -37,6 +37,9 @@
             </a>
           </span>
         </div>
+        <div class="form-item">
+          <Thirdparty />
+        </div>
       </form>
     </div>
   </div>
@@ -44,10 +47,11 @@
 
 <script>
 import { mapActions } from "vuex";
+import Thirdparty from "./components/Thirdparty";
 export default {
   name: "jjlogin",
   props: {},
-  components: {},
+  components: { Thirdparty },
   data() {
     return {
       submiting: false,
@@ -161,8 +165,7 @@ export default {
     border-radius: 2px;
     position: relative;
   }
-  &_form {
-  }
+
 }
 
 .form {
@@ -190,6 +193,7 @@ export default {
   &-item {
     margin-bottom: 13px;
     width: 100%;
+    overflow: hidden;
     button,
     input {
       width: 100%;

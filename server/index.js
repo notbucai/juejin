@@ -107,7 +107,7 @@ async function koaInit() {
           ctx.throw(401);
           return;
         }
-      }else{
+      } else {
         await next();
       }
     })
@@ -116,10 +116,10 @@ async function koaInit() {
      */
     .use(koaBody({
       multipart: true, // 支持文件上传
-      encoding:'gzip',
+      encoding: 'gzip',
       encoding: 'utf-8',
       formidable: {
-        uploadDir: path.join(__dirname, 'public/upload/'), // 设置文件上传目录
+        // uploadDir: path.join(__dirname, 'public/upload/'), // 设置文件上传目录
         keepExtensions: true,    // 保持文件的后缀
         maxFieldsSize: 10 * 1024 * 1024, // 文件上传大小
         onFileBegin: (name, file) => { // 文件上传前的设置
@@ -136,7 +136,8 @@ async function koaInit() {
     //   path: [/^(?!\/api\/verify).*$/] /*不是\/api\/verify 就不鉴权 */
     // }))
     // .use(jwtFn(websiteConfig.jwt.secret))
-
+    // 静态资源
+    // .use(require('koa-static')())
     /**
      * 路由
      */

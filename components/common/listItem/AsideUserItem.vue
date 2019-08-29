@@ -1,7 +1,7 @@
 <template>
   <nuxt-link class="user_item" :to="`/user/${_id}`">
     <div class="user-aratar">
-      <img v-if="aratar" :src="aratar" :alt="username">
+      <img v-if="avatar" :src="avatar" :alt="username">
       <div v-else v-html="$util.avatars.init(_id)"></div>
     </div>
     <div class="user-info">
@@ -16,7 +16,7 @@
 export default {
   props: {
     _id: [String, Number],
-    aratar: String,
+    avatar: String,
     username: String,
     position: String,
     description: String

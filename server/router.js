@@ -11,6 +11,9 @@ const user = require('./api/user');
 const common = require('./api/common');
 const like = require('./api/like');
 const upload = require('./api/upload');
+
+const github = require('./api/auth/github');
+
 // 凡是url 中以 verify 开头的都要 通过验证
 // 公共
 router.get('/common/code', common.code);
@@ -36,8 +39,10 @@ router.post('/user/logout', user.logout);
 // 点赞 喜欢
 router.get('/verify/like/like', like.like);
 // 文件上传
-router.get('/verify/upload/img', upload.img);
-
+router.post('/verify/upload/img', upload.img);
+// 鉴权
+router.get('/auth/github', github.redirect);
+router.get('/auth/github/callback', github.callback);
 
 
 module.exports = router;

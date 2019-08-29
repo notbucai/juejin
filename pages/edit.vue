@@ -1,7 +1,7 @@
 <template>
   <section class="edit" @click="hanleOptionspublishStat">
     <header>
-      <input type="text" class="title-input" placeholder="请输入文章标题..." />
+      <input type="text" v-model="formData.title" class="title-input" placeholder="请输入文章标题..." />
       <div class="publish hero" ref="hero">
         <div class="action" @click="handleHeroOpen">
           <i class="iconfont open">&#xe71b;</i>
@@ -9,8 +9,14 @@
         <div class="options" v-show="heroStat">
           <h3>添加封面大图</h3>
           <div class="upload">
-            <div class="noupload" @click="handleFileInputOpen">
-              <input type="file" ref="upload" @change="handleUploadImg" hidden>
+            <div class="img" v-if="formData.hero">
+              <img :src="formData.hero" alt="hero" />
+              <div class="action" @click="handleDelHero">
+                <i class="iconfont">&#xe607;</i>
+              </div>
+            </div>
+            <div class="noupload" v-else @click="handleFileInputOpen">
+              <input type="file" ref="upload" @change="handleUploadImg" hidden />
             </div>
           </div>
         </div>
@@ -48,7 +54,7 @@
       <User class="right" />
     </header>
     <no-ssr>
-      <mavon-editor v-model="value" :boxShadow="false" />
+      <mavon-editor v-model="formData.content" :boxShadow="false" />
     </no-ssr>
   </section>
 </template>
@@ -69,21 +75,39 @@ export default {
     return {
       value: "",
       publishStat: false,
-      heroStat: false
+      heroStat: false,
+      formData: {
+        title: "",
+        hero: "",
+        content: "",
+        nav_id: "",
+        tag_id: ""
+      }
     };
   },
   methods: {
-    handleFileInputOpen(){
-      this.$refs['upload'].click();
+    handleDelHero() {
+      this.formData.hero = "";
     },
-    async handleUploadImg(event){
+    handleFileInputOpen() {
+      this.$refs["upload"].click();
+    },
+    async handleUploadImg(event) {
       const file = event.target.files[0];
-      if(!file){
+      if (!file) {
         return;
       }
-      const data = await this.$api.upload.img(file);
-      console.log(data);
-      this.$alert("123");
+      try {
+        const data = await this.$api.upload.img(file);
+        this.formData.hero = data;
+        this.$alert.toast({
+          message: "上传成功"
+        });
+      } catch (error) {
+        this.$alert.toast({
+          message: error.message || (error.data && error.data.message)
+        });
+      }
     },
     handleHeroOpen() {
       this.heroStat = true;
@@ -104,11 +128,21 @@ export default {
       return false;
     },
     hanleOptionspublishStat(event) {
-      if (!this.handleIsCurrentElement(event.target, this.$refs["publish"])) {
-        this.publishStat = false;
-      }
-      if (!this.handleIsCurrentElement(event.target, this.$refs["hero"])) {
-        this.heroStat = false;
+      try {
+        if (
+          this.publishStat &&
+          !this.handleIsCurrentElement(event.target, this.$refs["publish"])
+        ) {
+          this.publishStat = false;
+        }
+        if (
+          this.heroStat &&
+          !this.handleIsCurrentElement(event.target, this.$refs["hero"])
+        ) {
+          this.heroStat = false;
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
   }
@@ -154,7 +188,7 @@ export default {
 }
 .publish {
   &.hero {
-    .action {
+    > .action {
       margin-right: 10px;
       > .open {
         color: #777;
@@ -166,7 +200,7 @@ export default {
   height: 100%;
   display: flex;
   align-items: center;
-  .action {
+  > .action {
     margin-right: 10px;
     display: flex;
     align-items: center;
@@ -234,7 +268,7 @@ export default {
         position: relative;
         margin-top: 10px;
         cursor: pointer;
-        &::after{
+        &::after {
           content: "点击上传图片";
           color: #999;
           width: 100%;
@@ -242,6 +276,33 @@ export default {
           display: flex;
           align-items: center;
           justify-content: center;
+        }
+      }
+      .img {
+        width: 100%;
+        max-height: 400px;
+        border-radius: 4px;
+        overflow: hidden;
+        position: relative;
+        margin-top: 10px;
+        img {
+          width: 100%;
+        }
+        .action {
+          position: absolute;
+          right: 0;
+          top: 0;
+          height: auto;
+          background-color: #000c;
+          color: #fff;
+          display: block;
+          border-radius: 4px;
+          padding: 10px;
+          cursor: pointer;
+          user-select: none;
+          > i {
+            font-size: 20px;
+          }
         }
       }
     }

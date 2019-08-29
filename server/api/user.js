@@ -42,6 +42,8 @@ const currentUser = async (ctx, next) => {
 }
 
 const login = async (ctx, next) => {
+  console.log(process.env);
+  
   const { loginName, loginPass } = ctx.request.body;
   const user = await User.login({ loginName, loginPass });
   ctx.body = {
@@ -51,6 +53,7 @@ const login = async (ctx, next) => {
     }
   }
   ctx.session.user = user;
+
 }
 
 const register = async (ctx, next) => {
@@ -119,7 +122,7 @@ const logout = async (ctx, next) => {
 
   ctx.session.validation = null;
   ctx.session.user = null;
-  
+
   ctx.body = {
     code: 0,
     data: "登出成功，请重新登陆"
